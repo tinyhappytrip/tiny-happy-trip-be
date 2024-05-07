@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: TinyHappyTrip
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/tinyhappytrip?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: ssafy
+      password: ssafy
+
+mybatis:
+  mapper-locations: mapper/*.xml
+  type-aliases-package: com.example.jwt.*.model
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: 32fb489c2d3908512124353a733d2f58bcbc531fffb3cee4d8fe674ef97628e2
+  token-validity-in-seconds: 1800
