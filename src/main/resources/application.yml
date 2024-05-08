@@ -59,3 +59,7 @@ mybatis:
   type-aliases-package: com.tinyhappytrip.*.mapper
   configuration:
     map-underscore-to-camel-case: true
+
+jwt:
+  secret: 32fb489c2d3908512124353a733d2f58bcbc531fffb3cee4d8fe674ef97628e2
+  token-validity-in-seconds: 1800
