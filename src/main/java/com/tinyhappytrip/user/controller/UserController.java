@@ -53,24 +53,29 @@ public class UserController {
     }
 
     // 회원 정보 가져오기
-    @GetMapping
-    public UserResponse.UserInfo getUser() {
-        return userService.getUser();
-
+    @GetMapping("/{userId}")
+    public UserResponse.UserInfo getUser(@PathVariable Long userId) {
+        return userService.getUser(userId);
     }
 
     // 팔로우 추가
-    @PostMapping
-    public
-
-    // 팔로워 / 팔로잉 목록 가져오기
-    @GetMapping("/follow?type={type}")
-    public ResponseEntity<List<Long>> getFollowList(@RequestParam String type) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getFollowList(type));
+    @PostMapping("/follow/{followerId}")
+    public ResponseEntity<Integer> addFollow(@PathVariable Long followerId) {
+        return ResponseEntity.status(userService.addFollow(followerId) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    // 팔로우 취소
+    @DeleteMapping("/follow/{followerId}")
+    public ResponseEntity<Integer> removeFollow(@PathVariable Long followerId) {
+        return ResponseEntity.status(userService.removeFollow(followerId) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
-//
+    // 팔로워 / 팔로잉 목록 가져오기
+    @GetMapping("/follow/{userId}")
+    public List<Long> getFollowList(@RequestParam String type, @PathVariable Long userId) {
+        return userService.getFollowList(type, userId);
+    }
+
 //    @GetMapping("/follow/{userId}")
 //    public ResponseEntity<UserResponse> followeeList(@PathVariable Long userId) {
 //    }

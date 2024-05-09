@@ -19,13 +19,5 @@ public interface UserMapper {
 
     int delete(Long userId);
 
-    int selectFollowerCountByUserId(Long followerId);
-
-    int selectFollowingCountByUserId(Long followingId);
-
     Optional<User> selectByUserId(Long userId);
-
-    List<Long> selectAllFollowerByUserId(Long userId);
-
-    List<Long> selectAllFollowingByUserId(Long userId);
 }

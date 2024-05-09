@@ -17,9 +17,11 @@ public interface UserService {
 
     int withdrawal();
 
-    UserResponse.UserInfo getUser();
+    UserResponse.UserInfo getUser(Long userId);
 
+    int addFollow(Long followerId);
 
+    int removeFollow(Long followerId);
 
-    List<Long> getFollowList(String type);
+    List<Long> getFollowList(String type, Long userId);
 }

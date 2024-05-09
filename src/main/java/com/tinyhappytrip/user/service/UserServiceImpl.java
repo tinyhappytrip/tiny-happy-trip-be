@@ -6,6 +6,7 @@ import com.tinyhappytrip.security.util.SecurityUtil;
 import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.dto.UserRequest;
 import com.tinyhappytrip.user.dto.UserResponse;
+import com.tinyhappytrip.user.mapper.FollowMapper;
 import com.tinyhappytrip.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
+    private final FollowMapper followMapper;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
@@ -53,21 +55,26 @@ public class UserServiceImpl implements UserService {
         return userMapper.delete(SecurityUtil.getCurrentUserId());
     }
 
-    public UserResponse.UserInfo getUser() {
-        Long userId = SecurityUtil.getCurrentUserId();
-
-        return userMapper.selectByUserId(SecurityUtil.getCurrentUserId())
+    public UserResponse.UserInfo getUser(Long userId) {
+        return userMapper.selectByUserId(userId)
                 .map(user -> {
                     UserResponse.UserInfo userInfo = UserResponse.UserInfo.from(user);
-                    userInfo.setFollowerCount(userMapper.selectFollowerCountByUserId(userId));
-                    userInfo.setFollowingCount(userMapper.selectFollowingCountByUserId(userId));
+                    userInfo.setFollowerCount(followMapper.selectFollowCountByUserId("follower", userId));
+                    userInfo.setFollowingCount(followMapper.selectFollowCountByUserId("followee", userId));
                     return userInfo;
                 })
                 .orElse(null);
     }
 
-    public List<Long> getFollowList(String type) {
-        Long userId = SecurityUtil.getCurrentUserId();
-        return type.equals("follower") ? userMapper.selectAllFollowerByUserId(userId) : userMapper.selectAllFollowingByUserId(userId);
+    public int addFollow(Long followerId) {
+        return followMapper.insert(SecurityUtil.getCurrentUserId(), followerId);
+    }
+
+    public int removeFollow(Long followerId) {
+        return followMapper.delete(SecurityUtil.getCurrentUserId(), followerId);
+    }
+
+    public List<Long> getFollowList(String type, Long userId) {
+        return followMapper.selectAllByUserId(type, userId);
     }
 }

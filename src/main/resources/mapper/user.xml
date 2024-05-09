@@ -61,33 +61,9 @@
         WHERE user_id = #{userId}
     </delete>
 
-    <select id="selectFollowerCountByUserId">
-        SELECT COUNT(*)
-        FROM follows
-        WHERE follower_id = #{userId}
-    </select>
-
-    <select id="selectFollowingCountByUserId">
-        SELECT COUNT(*)
-        FROM follows
-        WHERE followee_id = #{userId}
-    </select>
-
     <select id="selectByUserId">
         SELECT *
         FROM users
         WHERE user_id = #{userId}
-    </select>
-
-    <select id="selectAllFollowerByUserId">
-        SELECT *
-        FROM follows
-        WHERE follower_id = #{userId}
-    </select>
-
-    <select id="selectAllFollowingByUserId">
-        SELECT *
-        FROM follows
-        WHERE followee_id = #{userId}
     </select>
 </mapper>
