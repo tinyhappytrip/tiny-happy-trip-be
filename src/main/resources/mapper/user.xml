@@ -2,25 +2,92 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.tinyhappytrip.user.mapper.UserMapper">
-    <resultMap id="user" type="com.tinyhappytrip.user.User">
-        <id property="id" column="member_id"/>
-        <result property="email" column="email"/>
-        <result property="password" column="password"/>
-        <result property="nickname" column="nickname"/>
-        <result property="address" column="address"/>
-        <result property="phone" column="phone"/>
-        <result property="profileImg" column="profileImg"/>
-        <collection property="roles" ofType="java.lang.String" resultMap="role"/>
-    </resultMap>
+    <!--    <resultMap id="user" type="com.tinyhappytrip.user.domain.User">-->
+    <!--        <id property="id" column="member_id"/>-->
+    <!--        <result property="email" column="email"/>-->
+    <!--        <result property="password" column="password"/>-->
+    <!--        <result property="nickname" column="nickname"/>-->
+    <!--        <result property="address" column="address"/>-->
+    <!--        <result property="phone" column="phone"/>-->
+    <!--        <result property="profileImg" column="profileImg"/>-->
+    <!--        <collection property="roles" ofType="java.lang.String" resultMap="role"/>-->
+    <!--    </resultMap>-->
 
-    <resultMap id="role" type="java.lang.String">
-        <result column="roles" property="value"/>
-    </resultMap>
+    <!--    <resultMap id="role" type="java.lang.String">-->
+    <!--        <result column="roles" property="value"/>-->
+    <!--    </resultMap>-->
 
-    <select id="findByEmail" resultMap="user">
-        SELECT m.*, mr.roles
-        FROM members m
-                 INNER JOIN member_roles mr ON m.member_id = mr.member_id
-        WHERE m.email = #{email}
+    <!--    <select id="findByEmail" resultMap="user">-->
+    <!--        SELECT m.*, mr.roles-->
+    <!--        FROM members m-->
+    <!--                 INNER JOIN member_roles mr ON m.member_id = mr.member_id-->
+    <!--        WHERE m.email = #{email}-->
+    <!--    </select>-->
+
+    <select id="selectByEmail">
+        SELECT *
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO users (email, password, birthdate, nickname, social_type)
+        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType})
+    </insert>
+
+    <select id="selectByType">
+        SELECT *
+        FROM users
+        <if test="type == 'email'">
+            WHERE email = #{value}
+        </if>
+        <if test="type == 'nickname'">
+            WHERE nickname = #{value}
+        </if>
+    </select>
+
+    <update id="update">
+        UPDATE users
+        SET password      = #{password},
+            nickname      = #{nickname},
+            profile_image = #{profileImage},
+            introduction  = #{introduction}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM users
+        WHERE user_id = #{userId}
+    </delete>
+
+    <select id="selectFollowerCountByUserId">
+        SELECT COUNT(*)
+        FROM follows
+        WHERE follower_id = #{userId}
+    </select>
+
+    <select id="selectFollowingCountByUserId">
+        SELECT COUNT(*)
+        FROM follows
+        WHERE followee_id = #{userId}
+    </select>
+
+    <select id="selectByUserId">
+        SELECT *
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAllFollowerByUserId">
+        SELECT *
+        FROM follows
+        WHERE follower_id = #{userId}
+    </select>
+
+    <select id="selectAllFollowingByUserId">
+        SELECT *
+        FROM follows
+        WHERE followee_id = #{userId}
     </select>
 </mapper>

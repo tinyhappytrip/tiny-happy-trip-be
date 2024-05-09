@@ -1,9 +1,25 @@
 package com.tinyhappytrip.user.service;
 
 import com.tinyhappytrip.security.jwt.JwtToken;
-import org.springframework.transaction.annotation.Transactional;
+import com.tinyhappytrip.user.dto.UserRequest;
+import com.tinyhappytrip.user.dto.UserResponse;
+
+import java.util.List;
 
 public interface UserService {
-    @Transactional
-    JwtToken login(String email, String password);
+    JwtToken login(UserRequest.Login login);
+
+    int join(UserRequest.Join join);
+
+    boolean validate(String type, String value);
+
+    int editUserInfo(UserRequest.Edit edit);
+
+    int withdrawal();
+
+    UserResponse.UserInfo getUser();
+
+
+
+    List<Long> getFollowList(String type);
 }

@@ -1,35 +1,33 @@
-package com.tinyhappytrip.user;
+package com.tinyhappytrip.user.domain;
 
+import com.tinyhappytrip.user.SocialType;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@ToString
 public class User implements UserDetails {
-    private Long id;
+    private Long userId;
     private String email;
     private String password;
+    private String birthDate;
     private String nickname;
-    private String address;
-    private String phone;
-    private String profileImg;
-    private List<String> roles;
+    private String profileImage;
+    private Role role;
+    private String introduction;
+    private SocialType socialType;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return Collections.singleton(new SimpleGrantedAuthority(this.role.getRole()));
     }
 
     @Override
