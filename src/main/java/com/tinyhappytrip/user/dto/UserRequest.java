@@ -1,10 +1,8 @@
 package com.tinyhappytrip.user.dto;
 
-import com.tinyhappytrip.user.SocialType;
-import com.tinyhappytrip.user.domain.Role;
+import com.tinyhappytrip.user.domain.SocialType;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 public class UserRequest {
 
@@ -23,6 +21,8 @@ public class UserRequest {
         private String birthDate;
         private String nickname;
         private SocialType socialType = SocialType.EMAIL;
+        private String profileImageName = "default.jpg";
+        private String profileImagePath = "C:\\tinyhappytrip\\user\\default.jpg";
     }
 
     @Getter
@@ -31,7 +31,6 @@ public class UserRequest {
         private Long userId;
         private String password;
         private String nickname;
-        private String profileImage;
         private String introduction;
     }
 

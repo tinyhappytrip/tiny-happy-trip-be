@@ -75,3 +75,16 @@ mybatis:
 jwt:
   secret: 32fb489c2d3908512124353a733d2f58bcbc531fffb3cee4d8fe674ef97628e2
   token-validity-in-seconds: 3600
+
+youtube:
+  api:
+    key: AIzaSyB6MN5BHZp6qCqGtRXJvRgUtc4CpsnL6e8
+
+upload:
+  dir: /path/to/upload/directory
+#  dir: /Users/soom/Desktop/tinyhappytrip
+
+image:
+  user: C:\\tinyhappytrip\\user
+  story: C:\\tinyhappytrip\\story
+  playlist: C:\\tinyhappytrip\\playlist

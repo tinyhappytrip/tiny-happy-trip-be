@@ -1,6 +1,5 @@
 package com.tinyhappytrip.user.domain;
 
-import com.tinyhappytrip.user.SocialType;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +19,8 @@ public class User implements UserDetails {
     private String password;
     private String birthDate;
     private String nickname;
-    private String profileImage;
+    private String profileImageName;
+    private String profileImagePath;
     private Role role;
     private String introduction;
     private SocialType socialType;

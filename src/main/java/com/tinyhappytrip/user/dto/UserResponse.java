@@ -1,8 +1,11 @@
 package com.tinyhappytrip.user.dto;
 
-import com.tinyhappytrip.user.SocialType;
+import com.tinyhappytrip.user.domain.SocialType;
 import com.tinyhappytrip.user.domain.User;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -11,12 +14,11 @@ public class UserResponse {
     @Getter
     @Setter
     @Builder
-    @ToString
     public static class UserInfo {
         private Long userId;
         private String email;
         private String nickname;
-        private String profileImage;
+        private String profileImageName;
         private String introduction;
         private SocialType socialType;
         private int followerCount;
@@ -27,7 +29,7 @@ public class UserResponse {
                     .userId(user.getUserId())
                     .email(user.getEmail())
                     .nickname(user.getNickname())
-                    .profileImage(user.getProfileImage())
+                    .profileImageName(user.getProfileImageName())
                     .introduction(user.getIntroduction())
                     .socialType(user.getSocialType())
                     .build();

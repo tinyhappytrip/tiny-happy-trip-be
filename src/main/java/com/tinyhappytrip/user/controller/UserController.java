@@ -1,16 +1,18 @@
 package com.tinyhappytrip.user.controller;
 
 import com.tinyhappytrip.security.jwt.JwtToken;
-import com.tinyhappytrip.security.util.SecurityUtil;
 import com.tinyhappytrip.user.dto.UserRequest;
 import com.tinyhappytrip.user.dto.UserResponse;
 import com.tinyhappytrip.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -58,6 +60,12 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+    // 비밀번호 초기화
+    @GetMapping("/reset/{email}")
+    public void resetPassword(@PathVariable String email) {
+        userService.resetPassword(email);
+    }
+
     // 팔로우 추가
     @PostMapping("/follow/{followerId}")
     public ResponseEntity<Integer> addFollow(@PathVariable Long followerId) {
@@ -76,20 +84,12 @@ public class UserController {
         return userService.getFollowList(type, userId);
     }
 
-//    @GetMapping("/follow/{userId}")
-//    public ResponseEntity<UserResponse> followeeList(@PathVariable Long userId) {
-//    }
-//
-//
-//    @PostMapping("/follows/{userId}")
-//    public ResponseEntity<Void> followUser(@PathVariable Long userId) {
-//        // userId를 사용하여 특정 사용자를 팔로우하는 작업 수행
-//    }
-//
-//    @DeleteMapping("/follows/{userId}")
-//    public ResponseEntity<Void> unfollowUser(@PathVariable Long userId) {
-//        // userId를 사용하여 특정 사용자를 언팔로우하는 작업 수행
-//    }
+    // 회원 이미지 수정
+    @PostMapping("/profile-image")
+    public ResponseEntity<String> uploadProfileImage(@Value("${image.user}") String basePath, @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+        userService.uploadProfileImage(basePath, profileImage);
+        return ResponseEntity.ok("프로필 이미지가 성공적으로 변경되었습니다.");
+    }
 
 
     /**
@@ -102,17 +102,4 @@ public class UserController {
 //        int res = userService.duplicateId();
 //        return ResponseEntity.status(res == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 //    }
-    @PostMapping("/members/test")
-    public Long member() {
-        Long currentUsername = SecurityUtil.getCurrentUserId();
-        System.out.println("currentUsername = " + currentUsername);
-        return currentUsername;
-    }
-
-    @PostMapping("/admin/test")
-    public Long admin() {
-        Long currentUsername = SecurityUtil.getCurrentUserId();
-        System.out.println("currentUsername = " + currentUsername);
-        return currentUsername;
-    }
 }
