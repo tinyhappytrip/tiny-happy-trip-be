@@ -80,10 +80,6 @@ youtube:
   api:
     key: AIzaSyB6MN5BHZp6qCqGtRXJvRgUtc4CpsnL6e8
 
-upload:
-  dir: /path/to/upload/directory
-#  dir: /Users/soom/Desktop/tinyhappytrip
-
 image:
   user: C:\\tinyhappytrip\\user
   story: C:\\tinyhappytrip\\story
