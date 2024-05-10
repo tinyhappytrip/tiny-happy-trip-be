@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.tinyhappytrip.story.mapper.StoryMapper">
+    <insert id="insertStoryByStory" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$CreateStory">
+        INSERT INTO stories (user_id, content, weather, emotion, location, scope)
+        VALUES (#{userId}, #{content}, #{weather}, #{emotion}, #{location}, #{accessLevel})
+        <selectKey resultType="int" keyProperty="storyId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="insertImageByStoryImage" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$CreateImage">
+        INSERT INTO story_images (story_id, original_file, save_file)
+        VALUES (#{storyId}, #{file.originalFile}, #{file.saveFile})
+    </insert>
+
+    <insert id="insertHashtagByStoryHashtag" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$CreateHashtag">
+        INSERT INTO story_hashtags (story_id, hashtag)
+        VALUES (#{storyId}, #{hashtag})
+    </insert>
+
+    <insert id="insertTagByStoryTag" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$CreateTag">
+        INSERT INTO story_tags (user_id, story_id)
+        VALUES (#{userId}, #{storyId})
+    </insert>
+
+    <delete id="deleteStoryByStoryId" parameterType="int">
+        DELETE
+        FROM stories
+        WHERE story_id=#{storyId}
+    </delete>
+
+    <delete id="deleteImagesByStoryId" parameterType="int">
+        DELETE
+        FROM story_images
+        WHERE story_id=#{storyId}
+    </delete>
+
+    <delete id="deleteHashtagsByStoryId" parameterType="int">
+        DELETE
+        FROM story_hashtags
+        WHERE story_id=#{storyId}
+    </delete>
+
+    <delete id="deleteTagsByStoryId" parameterType="int">
+        DELETE
+        FROM story_tags
+        WHERE story_id=#{storyId}
+    </delete>
+
+    <update id="updateStoryByStory" parameterType="map">
+        UPDATE stories
+        SET content=#{story.content},
+            weather=#{story.weather},
+            emotion=#{story.emotion},
+            location=#{story.location},
+            scope=#{story.accessLevel}
+        WHERE story_id=#{storyId}
+    </update>
+
+    <insert id="insertStoryLikeByStoryIdAndUserId" parameterType="map">
+        INSERT INTO story_likes (story_id, user_id)
+        VALUES (#{storyId}, #{userId})
+    </insert>
+
+    <delete id="deleteStoryLikeByStoryIdAndUserId" parameterType="map">
+        DELETE
+        FROM story_likes
+        WHERE story_id=#{storyId} and user_id=#{userId}
+    </delete>
+
+    <select id="selectStoryByStoryId" parameterType="int" resultType="com.tinyhappytrip.story.dto.StoryResponseDto$SelectStory">
+        SELECT story_id, user_id, post_time as createdAt, content, weather, emotion, location, scope as accessLevel
+        FROM stories
+        WHERE story_id=#{storyId}
+    </select>
+
+    <select id="selectStoryImagesByStoryId" parameterType="int" resultType="com.tinyhappytrip.story.dto.FileInfoDto">
+        SELECT save_folder, original_file, save_file
+        FROM story_images
+        WHERE story_id=#{storyId}
+    </select>
+
+    <select id="selectStoryHashtagsByStoryId" parameterType="int" resultType="string">
+        SELECT hashtag
+        FROM story_hashtags
+        WHERE story_id=#{storyId}
+    </select>
+
+    <select id="selectStoryTagsByStoryId" parameterType="int" resultType="string">
+        SELECT user_id
+        FROM story_tags
+        WHERE story_id=#{storyId}
+    </select>
+
+    <select id="selectAllStoriesIdsByUserId" parameterType="int" resultType="int">
+        SELECT story_id
+        FROM stories
+        WHERE user_id=#{userId}
+        UNION
+        SELECT s.story_id
+        FROM stories s RIGHT JOIN follows f ON s.user_id = f.follower_id
+        WHERE (f.followee_id = #{userId} AND s.scope = 'FOLLOWER')
+        UNION
+        SELECT s.story_id
+        FROM stories s
+        WHERE s.scope = 'PUBLIC'
+    </select>
+
+    <select id="selectStoryLikeCountByStoryId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM story_likes
+        WHERE story_id=#{storyId}
+    </select>
+
+    <select id="selectMyStoriesIdsByUserId" parameterType="int" resultType="int">
+        SELECT story_id
+        FROM stories
+        WHERE user_id=#{userId}
+    </select>
+</mapper>

@@ -11,10 +11,18 @@ spring:
 
 mybatis:
   mapper-locations: mapper/*.xml
-  type-aliases-package: com.example.jwt.*.model
+  type-aliases-package: com.tinyhappytrip.*.mapper
   configuration:
     map-underscore-to-camel-case: true
 
-jwt:
-  secret: 32fb489c2d3908512124353a733d2f58bcbc531fffb3cee4d8fe674ef97628e2
-  token-validity-in-seconds: 1800
+
+servlet:
+  multipart:
+    max-file-size: 100MB
+    max-request-size: 100MB
+    # window
+    location: c:\\Project\\tinyhappytrip
+    # mac
+#    location: e:\\Project\\tinyhappytrip
+#    location: /Users/soom/Desktop/tinyhappytrip
+
