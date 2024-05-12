@@ -1,6 +1,6 @@
 package com.tinyhappytrip.user.dto;
 
-import com.tinyhappytrip.user.domain.SocialType;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import lombok.Getter;
 import lombok.Setter;
 

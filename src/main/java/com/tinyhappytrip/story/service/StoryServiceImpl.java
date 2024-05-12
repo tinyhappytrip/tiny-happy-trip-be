@@ -1,220 +1,157 @@
 package com.tinyhappytrip.story.service;
 
-import com.tinyhappytrip.story.dto.FileInfoDto;
+import com.tinyhappytrip.security.util.SecurityUtil;
+import com.tinyhappytrip.story.domain.Story;
+import com.tinyhappytrip.story.domain.StoryComment;
+import com.tinyhappytrip.story.domain.StoryImage;
+import com.tinyhappytrip.story.domain.StoryReply;
 import com.tinyhappytrip.story.dto.StoryRequestDto;
 import com.tinyhappytrip.story.dto.StoryResponseDto;
-import com.tinyhappytrip.story.mapper.StoryMapper;
+import com.tinyhappytrip.story.mapper.*;
+import com.tinyhappytrip.user.domain.User;
+import com.tinyhappytrip.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StoryServiceImpl implements StoryService {
-
     private final StoryMapper storyMapper;
+    private final StoryHashTagMapper storyHashTagMapper;
+    private final StoryTagMapper storyTagMapper;
+    private final StoryImageMapper storyImageMapper;
+    private final StoryLikeMapper storyLikeMapper;
+    private final StoryCommentMapper storyCommentMapper;
+    private final UserMapper userMapper;
 
     @Override
-    public int createStory(StoryRequestDto.Create story, int userId) throws IOException {
-
-        // 스토리 생성하기
-        int storyId = insertStory(story, userId);
-
-        // 스토리 이미지 넣기
-        int imageResult = insertStoryImage(story, storyId);
-
-        // 스토리 해시태그 넣기
-        int hashtagResult = insertHashtags(story, storyId);
-
-        // 스토리 아이디 태그 넣기
-        int tagResult = insertTags(story, storyId);
-        return imageResult * hashtagResult * tagResult;
-    }
-
-    private int insertStory(StoryRequestDto.Create story, int userId) {
-        // 스토리 생성
-        StoryRequestDto.CreateStory newStory = new StoryRequestDto.CreateStory(
-                userId,
-                story.getContent(),
-                story.getWeather(),
-                story.getEmotion(),
-                story.getLocation(),
-                story.getAccessLevel()
-        );
-
-        storyMapper.insertStoryByStory(newStory);
-        return newStory.getStoryId();
-    }
-
-    private int insertStoryImage(StoryRequestDto.Create story, int storyId) throws IOException {
-        MultipartFile[] files = story.getFiles();
-
-        if (files.length > 0 && !files[0].isEmpty()) {
-
-            String realPath =  "/story";
-            String today = new SimpleDateFormat("yyMMdd").format(new Date());
-            String saveFolder = realPath + File.separator + today;
-            File folder = new File(saveFolder);
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-
-            List<FileInfoDto> fileInfos = new ArrayList();
-            for (MultipartFile mfile: files) {
-                FileInfoDto fileInfoDto = new FileInfoDto();
-                String originalFileName = mfile.getOriginalFilename();
-                if (!originalFileName.isEmpty()) {
-                    String saveFileName = UUID.randomUUID().toString()
-                            + originalFileName.substring(originalFileName.lastIndexOf('.'));
-                    fileInfoDto.setSaveFolder(today);
-                    fileInfoDto.setOriginalFile(originalFileName);
-                    fileInfoDto.setSaveFile(saveFileName);
-                    mfile.transferTo(new File(folder, saveFileName));
-                }
-
-                StoryRequestDto.CreateImage newImage = new StoryRequestDto.CreateImage(
-                        storyId,
-                        fileInfoDto
-                );
-                int result = storyMapper.insertImageByStoryImage(newImage);
-                if (result != 1) return 0;
-            }
+    @Transactional
+    public int createStory(String basePath, StoryRequestDto.Create create) {
+        try {
+            Long userId = SecurityUtil.getCurrentUserId();
+            create.setImagePaths(saveFiles(basePath, create.getImages()));
+            storyMapper.insert(userId, create);
+            storyHashTagMapper.insert(create);
+            storyTagMapper.insert(create);
+            storyImageMapper.insert(create);
+            return 1;
+        } catch (Exception e) {
+            return 0;
         }
-        return 1;
     }
 
-    private int insertHashtags(StoryRequestDto.Create story, int storyId) {
-        for (String hashtag: story.getHashtags()) {
-            StoryRequestDto.CreateHashtag newHashtag = new StoryRequestDto.CreateHashtag(
-                    storyId,
-                    hashtag
-            );
-            int result = storyMapper.insertHashtagByStoryHashtag(newHashtag);
-            if (result != 1) return 0;
+    @Override
+    public int deleteStory(Long storyId) {
+        List<String> storyImages = storyImageMapper.selectAllByStoryId(storyId);
+        storyImages.stream()
+                .map(File::new)
+                .forEach(File::delete);
+        return storyMapper.delete(storyId, SecurityUtil.getCurrentUserId());
+    }
+
+    @Override
+    public int updateStory(Long storyId, StoryRequestDto.Update story) {
+        return storyMapper.update(storyId, SecurityUtil.getCurrentUserId(), story);
+    }
+
+    @Override
+    public int setStoryLike(Long storyId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        if (storyLikeMapper.selectCountByStoryIdAndUserId(storyId, userId) == 1) {
+            return storyLikeMapper.delete(storyId, userId);
         }
-        return 1;
+        return storyLikeMapper.insert(storyId, userId);
     }
 
-    private int insertTags(StoryRequestDto.Create story, int storyId) {
-        for (int userId: story.getTags()) {
-            StoryRequestDto.CreateTag newTag = new StoryRequestDto.CreateTag(
-                    storyId,
-                    userId
-            );
-            int result = storyMapper.insertTagByStoryTag(newTag);
-            if (result != 1) return 0;
+    @Override
+    public List<StoryResponseDto.StoryInfo> getAllUserStory(Long userId) {
+        return storyMapper.selectAllByUserId(userId)
+                .stream()
+                .map(story -> {
+                    StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
+                    setStoryInfo(storyInfo);
+                    return storyInfo;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StoryResponseDto.StoryInfo> getAllStory() {
+        return storyMapper.selectUserStoriesByUserId(SecurityUtil.getCurrentUserId())
+                .stream()
+                .map(story -> {
+                    StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
+                    setStoryInfo(storyInfo);
+                    return storyInfo;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StoryResponseDto.StoryInfo getStory(Long storyId) {
+        Story story = storyMapper.selectByStoryId(storyId);
+        StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
+        setStoryInfo(storyInfo);
+        return storyInfo;
+    }
+
+    @Override
+    public int addComment(Long storyId, String type, StoryRequestDto.Comment comment) {
+        return storyCommentMapper.insert(storyId, type, SecurityUtil.getCurrentUserId(), comment);
+    }
+
+    @Override
+    public int deleteComment(Long storyCommentId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return storyCommentMapper.delete(storyCommentId, userId);
+    }
+
+    public List<StoryImage> saveFiles(String basePath, MultipartFile[] files) throws IOException {
+        String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        String uploadPath = basePath + File.separator + yyyyMm;
+        File directory = new File(uploadPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
-        return 1;
-    }
-
-    @Override
-    public int deleteStory(int storyId) {
-        // 스토리 삭제
-        int storyResult = storyMapper.deleteStoryByStoryId(storyId);
-        // 스토리 이미지 삭제
-        int imageResult = storyMapper.deleteImagesByStoryId(storyId);
-        // 스토리 해시태그 삭제
-        int hashtagResult = storyMapper.deleteHashtagsByStoryId(storyId);
-        // 스토리 아이디 태그 삭제
-        int tagResult = storyMapper.deleteTagsByStoryId(storyId);
-        return storyResult * imageResult * hashtagResult * tagResult;
-    }
-
-    @Override
-    public int updateStory(int storyId, StoryRequestDto.Update story) {
-        return storyMapper.updateStoryByStory(storyId, story);
-    }
-
-    @Override
-    public int likeStory(int storyId, int userId) {
-        return storyMapper.insertStoryLikeByStoryIdAndUserId(storyId, userId);
-    }
-    @Override
-    public int notlikeStory(int storyId, int userId) {
-        return storyMapper.deleteStoryLikeByStoryIdAndUserId(storyId, userId);
-    }
-
-    @Override
-    public List<StoryResponseDto.Story> stories(int userId) {
-        List<StoryResponseDto.Story> stories = new ArrayList<>();
-
-        // 해당 유저가 볼 수 있는 모든 스토리 id를 담은 list (stories table에서 자신이 팔로우 한 유저거나, 전체 공개 게시물)
-        List<Integer> storyIdList = storyMapper.selectAllStoriesIdsByUserId(userId);
-        System.out.println(storyIdList);
-        for (Integer storyId: storyIdList) {
-            StoryResponseDto.SelectStory story = storyMapper.selectStoryByStoryId(storyId);
-            if (story == null) return null;
-            StoryResponseDto.Story newStory = new StoryResponseDto.Story(
-                    story.getStoryId(),
-                    story.getUserId(),
-                    story.getCreatedAt(),
-                    story.getContent(),
-                    story.getWeather(),
-                    story.getEmotion(),
-                    story.getLocation(),
-                    story.getAccessLevel(),
-                    storyMapper.selectStoryTagsByStoryId(storyId),
-                    storyMapper.selectStoryHashtagsByStoryId(storyId),
-                    storyMapper.selectStoryImagesByStoryId(storyId),
-                    storyMapper.selectStoryLikeCountByStoryId(storyId)
-            );
-            stories.add(newStory);
+        List<StoryImage> imageInfoList = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String originalFileName = file.getOriginalFilename();
+            String storedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+            String fullPath = uploadPath + File.separator + storedFileName;
+            File dest = new File(fullPath);
+            file.transferTo(dest);
+            StoryImage storyImage = new StoryImage();
+            storyImage.setStoryImageName(originalFileName);
+            storyImage.setStoryImagePath(fullPath);
+            imageInfoList.add(storyImage);
         }
-        return stories;
+        return imageInfoList;
     }
 
-    @Override
-    public StoryResponseDto.Story story(int storyId) {
-        StoryResponseDto.SelectStory story = storyMapper.selectStoryByStoryId(storyId);
-        if (story == null) return null;
-        StoryResponseDto.Story newStory = new StoryResponseDto.Story(
-                story.getStoryId(),
-                story.getUserId(),
-                story.getCreatedAt(),
-                story.getContent(),
-                story.getWeather(),
-                story.getEmotion(),
-                story.getLocation(),
-                story.getAccessLevel(),
-                storyMapper.selectStoryTagsByStoryId(storyId),
-                storyMapper.selectStoryHashtagsByStoryId(storyId),
-                storyMapper.selectStoryImagesByStoryId(storyId),
-                storyMapper.selectStoryLikeCountByStoryId(storyId)
-                );
-        return newStory;
-    }
-
-    @Override
-    public List<StoryResponseDto.Story> mystories(int userId) {
-        List<StoryResponseDto.Story> stories = new ArrayList<>();
-        List<Integer> storyIdList = storyMapper.selectMyStoriesIdsByUserId(userId);
-        for (Integer storyId: storyIdList) {
-            StoryResponseDto.SelectStory story = storyMapper.selectStoryByStoryId(storyId);
-            if (story == null) return null;
-            StoryResponseDto.Story newStory = new StoryResponseDto.Story(
-                    story.getStoryId(),
-                    story.getUserId(),
-                    story.getCreatedAt(),
-                    story.getContent(),
-                    story.getWeather(),
-                    story.getEmotion(),
-                    story.getLocation(),
-                    story.getAccessLevel(),
-                    storyMapper.selectStoryTagsByStoryId(storyId),
-                    storyMapper.selectStoryHashtagsByStoryId(storyId),
-                    storyMapper.selectStoryImagesByStoryId(storyId),
-                    storyMapper.selectStoryLikeCountByStoryId(storyId)
-            );
-            stories.add(newStory);
-        }
-        return stories;
+    private void setStoryInfo(StoryResponseDto.StoryInfo storyInfo) {
+        storyInfo.setHashtags(storyHashTagMapper.selectHashTagByStoryId(storyInfo.getStoryId()));
+        storyInfo.setTags(storyTagMapper.selectUserIdByStoryId(storyInfo.getStoryId()));
+        storyInfo.setImages(storyImageMapper.selectAllByStoryId(storyInfo.getStoryId()));
+        storyInfo.setLikeCount(storyLikeMapper.selectCountByStoryId(storyInfo.getStoryId()));
+        List<StoryComment> storyCommentList = storyCommentMapper.selectCommentByStoryId(storyInfo.getStoryId());
+        List<StoryResponseDto.Comment> comments = storyCommentList.stream()
+                .map(storyComment -> {
+                    User user = userMapper.selectById(storyComment.getUserId()).get();
+                    List<StoryReply> storyReplies = storyCommentMapper.selectReplyByStoryCommentId(storyComment.getStoryCommentId());
+                    return StoryResponseDto.Comment.from(user, storyComment, StoryResponseDto.Reply.from(user, storyReplies));
+                })
+                .collect(Collectors.toList());
+        storyInfo.setComments(comments);
     }
 }

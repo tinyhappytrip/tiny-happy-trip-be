@@ -1,37 +1,22 @@
 package com.tinyhappytrip.story.mapper;
 
-import com.tinyhappytrip.story.dto.FileInfoDto;
+import com.tinyhappytrip.story.domain.Story;
 import com.tinyhappytrip.story.dto.StoryRequestDto;
-import com.tinyhappytrip.story.dto.StoryResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface StoryMapper {
-    int insertStoryByStory(StoryRequestDto.CreateStory story);
-    int insertImageByStoryImage(StoryRequestDto.CreateImage storyImage);
-    int insertHashtagByStoryHashtag(StoryRequestDto.CreateHashtag storyHashtag);
-    int insertTagByStoryTag(StoryRequestDto.CreateTag storyTag);
+    void insert(Long userId, StoryRequestDto.Create create);
 
-    int deleteStoryByStoryId(int storyId);
-    int deleteImagesByStoryId(int storyId);
-    int deleteHashtagsByStoryId(int storyId);
-    int deleteTagsByStoryId(int storyId);
+    int delete(Long storyId, Long userId);
 
-    int updateStoryByStory(int storyId, StoryRequestDto.Update story);
+    int update(Long storyId, Long userId, StoryRequestDto.Update story);
 
-    int insertStoryLikeByStoryIdAndUserId(int storyId, int userId);
-    int deleteStoryLikeByStoryIdAndUserId(int storyId, int userId);
+    List<Story> selectAllByUserId(Long userId);
 
-    StoryResponseDto.SelectStory selectStoryByStoryId(int storyId);
-    List<FileInfoDto>  selectStoryImagesByStoryId(int storyId);
-    List<String> selectStoryHashtagsByStoryId(int storyId);
-    List<String> selectStoryTagsByStoryId(int storyId);
+    List<Story> selectUserStoriesByUserId(Long currentUserId);
 
-    List<Integer> selectAllStoriesIdsByUserId(int userId);
-
-    int selectStoryLikeCountByStoryId(int storyId);
-
-    List<Integer> selectMyStoriesIdsByUserId(int userId);
+    Story selectByStoryId(Long storyId);
 }

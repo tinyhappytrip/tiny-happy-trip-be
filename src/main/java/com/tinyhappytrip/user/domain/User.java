@@ -1,5 +1,7 @@
 package com.tinyhappytrip.user.domain;
 
+import com.tinyhappytrip.user.domain.enums.Role;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,9 +12,6 @@ import java.util.Collections;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class User implements UserDetails {
     private Long userId;
     private String email;

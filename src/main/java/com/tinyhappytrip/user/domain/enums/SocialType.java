@@ -1,4 +1,4 @@
-package com.tinyhappytrip.user.domain;
+package com.tinyhappytrip.user.domain.enums;
 
 public enum SocialType {
     GOOGLE,

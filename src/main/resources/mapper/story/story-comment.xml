@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.story.mapper.StoryCommentMapper">
+    <insert id="insert">
+        <if test="type == 'comment'">
+            INSERT INTO story_comments (user_id, story_id, content)
+            VALUES (#{userId}, #{storyId}, #{comment.content})
+        </if>
+        <if test="type == 'reply'">
+            INSERT INTO story_comments (story_reply_id ,user_id, story_id, content)
+            VALUES (#{comment.storyReplyId}, #{userId}, #{storyId}, #{comment.content})
+        </if>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM story_comments
+        WHERE story_comment_id = #{storyCommentId}
+          AND user_id = #{userId}
+    </delete>
+
+    <select id="selectCommentByStoryId">
+        SELECT *
+        FROM story_comments
+        WHERE story_id = #{storyId}
+          AND story_reply_id IS NULL
+    </select>
+
+
+    <select id="selectReplyByStoryCommentId">
+        SELECT *
+        FROM story_comments
+        WHERE story_reply_id = #{storyCommentId}
+    </select>
+</mapper>
