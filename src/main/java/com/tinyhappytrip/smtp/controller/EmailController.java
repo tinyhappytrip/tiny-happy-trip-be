@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
     private final EmailService emailService;
 
-
     @PostMapping("/signup")
     public String signUpMailSend(@RequestBody EmailRequestDto.SignUp signUp) throws Exception {
         int number = emailService.sendMail(signUp.getEmail());

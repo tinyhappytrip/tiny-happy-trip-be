@@ -66,8 +66,13 @@ spring:
           starttls:
             enable: true
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 mybatis:
-  mapper-locations: mapper/*.xml
+  mapper-locations: mapper/*/*.xml
   type-aliases-package: com.tinyhappytrip.*.mapper
   configuration:
     map-underscore-to-camel-case: true
@@ -80,7 +85,22 @@ youtube:
   api:
     key: AIzaSyB6MN5BHZp6qCqGtRXJvRgUtc4CpsnL6e8
 
+
+
+# 싸피
+#image:
+#  user: C:\\tinyhappytrip\\user
+#  story: C:\\tinyhappytrip\\story
+#  playlist: C:\\tinyhappytrip\\playlist
+
+# 성빈
 image:
-  user: C:\\tinyhappytrip\\user
-  story: C:\\tinyhappytrip\\story
-  playlist: C:\\tinyhappytrip\\playlist
+  user: /Users/sungbincho/Desktop/tinyhappytrip/user
+  story: /Users/sungbincho/Desktop/tinyhappytrip/story
+  playlist: /Users/sungbincho/Desktop/tinyhappytrip/playlist
+
+# 수민
+#image:
+#  user: /Users/압력/Desktop/tinyhappytrip/user
+#  story: /Users/압력/Desktop/tinyhappytrip/story
+#  playlist: /Users/압력/Desktop/tinyhappytrip/playlist

@@ -1,11 +1,10 @@
 package com.tinyhappytrip.user.dto;
 
-import com.tinyhappytrip.user.domain.SocialType;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import com.tinyhappytrip.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 

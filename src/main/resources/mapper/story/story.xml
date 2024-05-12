@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.story.mapper.StoryMapper">
+
+    <insert id="insert" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$Create" useGeneratedKeys="true"
+            keyProperty="create.storyId">
+        INSERT INTO stories (user_id, content, weather, emotion, location, scope, latitude, longitude)
+        VALUES (#{userId}, #{create.content}, #{create.weather}, #{create.emotion}, #{create.location}, #{create.scope},
+                #{create.latitude}, #{create.longitude})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM stories
+        WHERE story_id = #{storyId}
+          AND user_id = #{userId}
+    </delete>
+
+    <update id="update">
+        UPDATE stories
+        SET content = #{story.content},
+            scope   = #{story.scope}
+        WHERE story_id = #{storyId}
+          AND user_id = #{userId}
+    </update>
+
+    <select id="selectAllByUserId">
+        SELECT *
+        FROM stories
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectUserStoriesByUserId">
+        SELECT *
+        FROM (SELECT s.*
+              FROM stories s
+                       JOIN follows f ON s.user_id = f.followee_id
+              WHERE f.followee_id = #{userId}
+                AND s.scope IN ('FOLLOWER', 'PUBLIC')
+              UNION
+              SELECT *
+              FROM stories
+              WHERE scope = 'PUBLIC') AS combined_stories
+        GROUP BY story_id, created_at, user_id
+        ORDER BY created_at DESC;
+    </select>
+
+    <select id="selectByStoryId">
+        SELECT *
+        FROM stories
+        WHERE story_id = #{storyId}
+    </select>
+</mapper>

@@ -91,12 +91,6 @@ public class UserController {
         return ResponseEntity.ok("프로필 이미지가 성공적으로 변경되었습니다.");
     }
 
-
-    /**
-     * 1. 유저 이미지 수정 API
-     * 2. 소
-     */
-
 //    @PostMapping("/duplication")
 //    public ResponseEntity<Integer> duplication(@RequestBody UserRequest.Duplcation duplcation) {
 //        int res = userService.duplicateId();

@@ -32,7 +32,8 @@
 
     <insert id="insert">
         INSERT INTO users (email, password, birthdate, nickname, social_type, profile_image_name, profile_image_path)
-        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType}, #{profileImageName}, #{profileImagePath})
+        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType}, #{profileImageName},
+                #{profileImagePath})
     </insert>
 
     <select id="selectTypeByValue">
@@ -48,9 +49,9 @@
 
     <update id="update">
         UPDATE users
-        SET password      = #{password},
-            nickname      = #{nickname},
-            introduction  = #{introduction}
+        SET password     = #{password},
+            nickname     = #{nickname},
+            introduction = #{introduction}
         WHERE user_id = #{userId}
     </update>
 

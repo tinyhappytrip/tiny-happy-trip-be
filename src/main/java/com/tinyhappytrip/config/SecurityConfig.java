@@ -35,17 +35,17 @@ public class SecurityConfig {
                 .httpBasic(HttpBasicConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers("/mail/**").permitAll()
-                                .requestMatchers("/users/validate").permitAll()
-                                .requestMatchers("/users/login").permitAll()
-                                .requestMatchers("/users/signup").permitAll()
-                                .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
-                                .anyRequest().permitAll()
-                )
+//                .authorizeHttpRequests(authorize ->
+//                        authorize
+//                                .requestMatchers("/mail/**").permitAll()
+//                                .requestMatchers("/users/validate").permitAll()
+//                                .requestMatchers("/users/login").permitAll()
+//                                .requestMatchers("/users/signup").permitAll()
+//                                .requestMatchers("/users/**").permitAll()
+//                                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
+//                                .anyRequest().permitAll()
+//                )
                 .oauth2Login(configure ->
                         configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
                                 .userInfoEndpoint(config -> config.userService(customOAuth2UserService))

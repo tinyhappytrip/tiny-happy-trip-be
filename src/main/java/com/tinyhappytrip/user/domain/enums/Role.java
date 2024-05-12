@@ -1,4 +1,4 @@
-package com.tinyhappytrip.user.domain;
+package com.tinyhappytrip.user.domain.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
