@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.playlist.mapper.PlaylistItemMapper">
+    <insert id="insert">
+        INSERT INTO playlist_items (playlist_id, story_id) VALUES
+        <foreach collection="playlistItems" item="playlistItemId" separator=",">
+            (#{playlistId}, #{playlistItemId})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM playlist_items
+        WHERE playlist_id=#{playlistId}
+    </delete>
+
+    <select id="selectPlaylistItems">
+        SELECT story_id
+        FROM playlist_items
+        WHERE playlist_id=#{playlistId}
+    </select>
+
+</mapper>
