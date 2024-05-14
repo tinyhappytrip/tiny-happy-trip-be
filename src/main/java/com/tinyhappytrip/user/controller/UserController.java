@@ -24,15 +24,17 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<JwtToken> login(@RequestBody UserRequest.Login login) {
-        JwtToken jwtToken = userService.login(login);
+    public ResponseEntity<JwtToken> login(@RequestBody UserRequest.LoginDto loginDto) {
+        System.out.println("loginDto.getEmail() = " + loginDto.getEmail());
+        System.out.println("loginDto.getPassword() = " + loginDto.getPassword());
+        JwtToken jwtToken = userService.login(loginDto);
         return ResponseEntity.status(jwtToken != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(jwtToken);
     }
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Integer> join(@RequestBody UserRequest.Join join) {
-        int res = userService.join(join);
+    public ResponseEntity<Integer> join(@RequestBody UserRequest.JoinDto joinDto) {
+        int res = userService.join(joinDto);
         return ResponseEntity.status(res == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(res);
     }
 
@@ -44,8 +46,8 @@ public class UserController {
 
     // 회원 정보 수정
     @PatchMapping
-    public ResponseEntity<Integer> editUserInfo(@RequestBody UserRequest.Edit edit) {
-        return ResponseEntity.status(userService.editUserInfo(edit) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<Integer> editUserInfo(@RequestBody UserRequest.EditDto editDto) {
+        return ResponseEntity.status(userService.editUserInfo(editDto) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 회원 삭제 -> 삭제 되었으면 200
@@ -56,7 +58,7 @@ public class UserController {
 
     // 회원 정보 가져오기
     @GetMapping("/{userId}")
-    public UserResponse.UserInfo getUser(@PathVariable Long userId) {
+    public UserResponse.UserDto getUser(@PathVariable Long userId) {
         return userService.getUser(userId);
     }
 
@@ -80,20 +82,14 @@ public class UserController {
 
     // 팔로워 / 팔로잉 목록 가져오기
     @GetMapping("/follow/{userId}")
-    public List<Long> getFollowList(@RequestParam String type, @PathVariable Long userId) {
-        return userService.getFollowList(type, userId);
+    public ResponseEntity<List<UserResponse.FollowUserDto>> getFollowList(@RequestParam String type, @PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getFollowList(type, userId));
     }
 
     // 회원 이미지 수정
-    @PostMapping("/profile-image")
-    public ResponseEntity<String> uploadProfileImage(@Value("${image.user}") String basePath, @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-        userService.uploadProfileImage(basePath, profileImage);
+    @PatchMapping("/image")
+    public ResponseEntity<String> uploadUserImage(@Value("${image.user}") String basePath, @RequestParam("userImageFile") MultipartFile userImageFile) throws IOException {
+        userService.uploadUserImage(basePath, userImageFile);
         return ResponseEntity.ok("프로필 이미지가 성공적으로 변경되었습니다.");
     }
-
-//    @PostMapping("/duplication")
-//    public ResponseEntity<Integer> duplication(@RequestBody UserRequest.Duplcation duplcation) {
-//        int res = userService.duplicateId();
-//        return ResponseEntity.status(res == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-//    }
 }

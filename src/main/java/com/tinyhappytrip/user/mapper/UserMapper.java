@@ -1,7 +1,6 @@
 package com.tinyhappytrip.user.mapper;
 
 import com.tinyhappytrip.user.domain.User;
-import com.tinyhappytrip.user.dto.UserRequest;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
@@ -10,17 +9,17 @@ import java.util.Optional;
 public interface UserMapper {
     Optional<User> selectByEmail(String email);
 
-    int insert(UserRequest.Join join);
+    int insert(User user);
 
-    Optional<User> selectTypeByValue(String type, String value);
+    Optional<User> selectByTypeAndValue(String type, String value);
 
-    int update(UserRequest.Edit edit);
+    int update(User user);
 
     int delete(Long userId);
 
-    Optional<User> selectById(Long userId);
+    Optional<User> selectByUserId(Long userId);
 
     void updatePassword(String email, String password);
 
-    void updateProfileImage(Long userId, String profileImageName, String profileImagePath);
+    void updateUserImage(Long userId, String userImage);
 }

@@ -1,4 +1,4 @@
-CREATE SCHEMA tinyhappytrip;
+CREATE SCHEMA IF NOT EXISTS tinyhappytrip;
 
 DROP TABLE IF EXISTS `tokens`;
 DROP TABLE IF EXISTS `follows`;
@@ -13,8 +13,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
     `introduction` VARCHAR(30) NULL,
     `social_type` ENUM('NAVER', 'KAKAO', 'GOOGLE', 'EMAIL') NOT NULL,
-    `profile_image_name` VARCHAR(255) NULL,
-    `profile_image_path` VARCHAR(255) NULL
+    `user_image` VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS `follows` (
@@ -35,13 +34,8 @@ CREATE TABLE IF NOT EXISTS `tokens` (
 );
 
 SELECT * FROM users;
- /*이 라인 삭제하고 테스트--; 
+SELECT * FROM follows;
 
+ /*이 라인 삭제하고 테스트--; 
 INSERT INTO `users` (`email`, `password`, `birthDate`, `nickname`, `role`, `introduction`, `social_type`) VALUES ('user', '1234', NOW(), 'user', 'USER', '안녕', 'NAVER');
 INSERT INTO `users` (`email`, `password`, `birthDate`, `nickname`, `role`, `introduction`, `social_type`) VALUES ('admin', '1234', CURRENT_TIMESTAMP(), 'admin', 'ADMIN', '안녕', 'KAKAO');
-SELECT * FROM users;
-SELECT * FROM follows;
-INSERT INTO `follows` (`followee_id`, `follower_id`) values ('성빈', '수민');
-DELETE FROM users WHERE user_id = 5;
-
-DELETE FROM follows WHERE follow_id = 13;

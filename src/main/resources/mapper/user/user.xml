@@ -2,28 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.tinyhappytrip.user.mapper.UserMapper">
-    <!--    <resultMap id="user" type="com.tinyhappytrip.user.domain.User">-->
-    <!--        <id property="id" column="member_id"/>-->
-    <!--        <result property="email" column="email"/>-->
-    <!--        <result property="password" column="password"/>-->
-    <!--        <result property="nickname" column="nickname"/>-->
-    <!--        <result property="address" column="address"/>-->
-    <!--        <result property="phone" column="phone"/>-->
-    <!--        <result property="profileImg" column="profileImg"/>-->
-    <!--        <collection property="roles" ofType="java.lang.String" resultMap="role"/>-->
-    <!--    </resultMap>-->
-
-    <!--    <resultMap id="role" type="java.lang.String">-->
-    <!--        <result column="roles" property="value"/>-->
-    <!--    </resultMap>-->
-
-    <!--    <select id="findByEmail" resultMap="user">-->
-    <!--        SELECT m.*, mr.roles-->
-    <!--        FROM members m-->
-    <!--                 INNER JOIN member_roles mr ON m.member_id = mr.member_id-->
-    <!--        WHERE m.email = #{email}-->
-    <!--    </select>-->
-
     <select id="selectByEmail">
         SELECT *
         FROM users
@@ -31,12 +9,11 @@
     </select>
 
     <insert id="insert">
-        INSERT INTO users (email, password, birthdate, nickname, social_type, profile_image_name, profile_image_path)
-        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType}, #{profileImageName},
-                #{profileImagePath})
+        INSERT INTO users (email, password, birthdate, nickname, social_type, user_image)
+        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType}, #{userImage})
     </insert>
 
-    <select id="selectTypeByValue">
+    <select id="selectByTypeAndValue">
         SELECT *
         FROM users
         <if test="type == 'email'">
@@ -49,9 +26,11 @@
 
     <update id="update">
         UPDATE users
-        SET password     = #{password},
-            nickname     = #{nickname},
-            introduction = #{introduction}
+        <set>
+            <if test="password != null">password = #{password},</if>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="introduction != null">introduction = #{introduction}</if>
+        </set>
         WHERE user_id = #{userId}
     </update>
 
@@ -61,7 +40,7 @@
         WHERE user_id = #{userId}
     </delete>
 
-    <select id="selectById">
+    <select id="selectByUserId">
         SELECT *
         FROM users
         WHERE user_id = #{userId}
@@ -73,10 +52,9 @@
         WHERE email = #{email}
     </update>
 
-    <update id="updateProfileImage">
+    <update id="updateUserImage">
         UPDATE users
-        SET profile_image_name = #{profileImageName},
-            profile_image_path = #{profileImagePath}
+        SET user_image = #{userImage}
         WHERE user_id = #{userId}
     </update>
 </mapper>

@@ -6,7 +6,7 @@ import java.util.List;
 
 @Mapper
 public interface FollowMapper {
-    int selectFollowCountByUserId(String type, Long userId);
+    Long selectFollowCountByUserId(String type, Long userId);
 
     List<Long> selectAllByUserId(String type, Long userId);
 
