@@ -25,8 +25,6 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody UserRequest.LoginDto loginDto) {
-        System.out.println("loginDto.getEmail() = " + loginDto.getEmail());
-        System.out.println("loginDto.getPassword() = " + loginDto.getPassword());
         JwtToken jwtToken = userService.login(loginDto);
         return ResponseEntity.status(jwtToken != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(jwtToken);
     }

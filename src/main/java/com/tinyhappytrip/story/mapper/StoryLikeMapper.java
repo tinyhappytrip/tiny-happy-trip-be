@@ -2,6 +2,8 @@ package com.tinyhappytrip.story.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface StoryLikeMapper {
     int selectCountByStoryIdAndUserId(Long storyId, Long userId);
@@ -10,5 +12,7 @@ public interface StoryLikeMapper {
 
     int insert(Long storyId, Long userId);
 
-    int selectCountByStoryId(Long storyId);
+    Long selectCountByStoryId(Long storyId);
+
+    List<Long> selectStoryIdByUserId(Long userId);
 }

@@ -29,4 +29,10 @@
         <include refid="count"></include>
         WHERE story_id = #{storyId}
     </select>
+
+    <select id="selectStoryIdByUserId">
+        SELECT story_id
+        FROM story_likes
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

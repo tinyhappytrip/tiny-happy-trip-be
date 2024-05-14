@@ -1,26 +1,36 @@
 package com.tinyhappytrip.story.service;
 
-import com.tinyhappytrip.story.dto.StoryRequestDto;
-import com.tinyhappytrip.story.dto.StoryResponseDto;
+import com.tinyhappytrip.story.dto.StoryRequest;
+import com.tinyhappytrip.story.dto.StoryResponse;
 
 import java.util.List;
 
 public interface StoryService {
-    int createStory(String basePath, StoryRequestDto.Create create);
+    int createStory(String basePath, StoryRequest.CreateDto createDto) throws Exception;
 
     int deleteStory(Long storyId);
 
-    int updateStory(Long storyId, StoryRequestDto.Update update);
+    int updateStory(Long storyId, StoryRequest.UpdateDto updateDto);
 
     int setStoryLike(Long storyId);
 
-    List<StoryResponseDto.StoryInfo> getAllUserStory(Long storyId);
+    List<StoryResponse.StoryDetailDto> getAllUserStory(Long userId);
 
-    List<StoryResponseDto.StoryInfo> getAllStory();
+    List<StoryResponse.StoryDetailDto> getAllStory();
 
-    StoryResponseDto.StoryInfo getStory(Long storyId);
+    StoryResponse.StoryDetailDto getStory(Long storyId);
 
-    int addComment(Long storyId, String type, StoryRequestDto.Comment comment);
+    int addComment(Long storyId, String content);
 
-    int deleteComment(Long commentId);
+    int addReply(Long storyCommentId, String content);
+
+    int removeComment(Long storyCommentId);
+
+    int removeReply(Long storyReplyId);
+
+    int editComment(Long storyCommentId, String content);
+
+    int editReply(Long storyReplyId, String content);
+
+    List<StoryResponse.StoryOverviewDto> getAllLikeStory();
 }
