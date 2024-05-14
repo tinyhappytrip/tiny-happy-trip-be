@@ -2,11 +2,8 @@ package com.tinyhappytrip.story.service;
 
 import com.tinyhappytrip.security.util.SecurityUtil;
 import com.tinyhappytrip.story.domain.Story;
-import com.tinyhappytrip.story.domain.StoryComment;
-import com.tinyhappytrip.story.domain.StoryImage;
-import com.tinyhappytrip.story.domain.StoryReply;
-import com.tinyhappytrip.story.dto.StoryRequestDto;
-import com.tinyhappytrip.story.dto.StoryResponseDto;
+import com.tinyhappytrip.story.dto.StoryRequest;
+import com.tinyhappytrip.story.dto.StoryResponse;
 import com.tinyhappytrip.story.mapper.*;
 import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.mapper.UserMapper;
@@ -28,27 +25,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StoryServiceImpl implements StoryService {
     private final StoryMapper storyMapper;
-    private final StoryHashTagMapper storyHashTagMapper;
+    private final StoryHashtagMapper storyHashtagMapper;
     private final StoryTagMapper storyTagMapper;
     private final StoryImageMapper storyImageMapper;
     private final StoryLikeMapper storyLikeMapper;
     private final StoryCommentMapper storyCommentMapper;
+    private final StoryReplyMapper storyReplyMapper;
     private final UserMapper userMapper;
 
     @Override
     @Transactional
-    public int createStory(String basePath, StoryRequestDto.Create create) {
-        try {
-            Long userId = SecurityUtil.getCurrentUserId();
-            create.setImagePaths(saveFiles(basePath, create.getImages()));
-            storyMapper.insert(userId, create);
-            storyHashTagMapper.insert(create);
-            storyTagMapper.insert(create);
-            storyImageMapper.insert(create);
-            return 1;
-        } catch (Exception e) {
-            return 0;
-        }
+    public int createStory(String basePath, StoryRequest.CreateDto createDto) throws Exception {
+        Long userId = SecurityUtil.getCurrentUserId();
+        List<String> storyImages = saveFiles(basePath, createDto.getImageFiles());
+        Story story = createDto.toEntity();
+        storyMapper.insert(userId, story);
+        storyHashtagMapper.insert(story.getStoryId(), createDto.getHashtags());
+        storyTagMapper.insert(story.getStoryId(), createDto.getTags());
+        storyImageMapper.insert(story.getStoryId(), storyImages);
+        return 1;
     }
 
     @Override
@@ -61,8 +56,8 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public int updateStory(Long storyId, StoryRequestDto.Update story) {
-        return storyMapper.update(storyId, SecurityUtil.getCurrentUserId(), story);
+    public int updateStory(Long storyId, StoryRequest.UpdateDto story) {
+        return storyMapper.update(storyId, SecurityUtil.getCurrentUserId(), story.toEntity());
     }
 
     @Override
@@ -75,83 +70,108 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<StoryResponseDto.StoryInfo> getAllUserStory(Long userId) {
+    public List<StoryResponse.StoryDetailDto> getAllUserStory(Long userId) {
         return storyMapper.selectAllByUserId(userId)
                 .stream()
-                .map(story -> {
-                    StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
-                    setStoryInfo(storyInfo);
-                    return storyInfo;
-                })
+                .map(this::getStoryDetail)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<StoryResponseDto.StoryInfo> getAllStory() {
+    public List<StoryResponse.StoryDetailDto> getAllStory() {
         return storyMapper.selectUserStoriesByUserId(SecurityUtil.getCurrentUserId())
                 .stream()
-                .map(story -> {
-                    StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
-                    setStoryInfo(storyInfo);
-                    return storyInfo;
-                })
+                .map(this::getStoryDetail)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public StoryResponseDto.StoryInfo getStory(Long storyId) {
-        Story story = storyMapper.selectByStoryId(storyId);
-        StoryResponseDto.StoryInfo storyInfo = StoryResponseDto.StoryInfo.from(story);
-        setStoryInfo(storyInfo);
-        return storyInfo;
+    public StoryResponse.StoryDetailDto getStory(Long storyId) {
+        return getStoryDetail(storyMapper.selectByStoryId(storyId));
     }
 
     @Override
-    public int addComment(Long storyId, String type, StoryRequestDto.Comment comment) {
-        return storyCommentMapper.insert(storyId, type, SecurityUtil.getCurrentUserId(), comment);
+    public int addComment(Long storyId, String content) {
+        return storyCommentMapper.insert(SecurityUtil.getCurrentUserId(), storyId, content);
     }
 
     @Override
-    public int deleteComment(Long storyCommentId) {
-        Long userId = SecurityUtil.getCurrentUserId();
-        return storyCommentMapper.delete(storyCommentId, userId);
+    public int addReply(Long storyCommentId, String content) {
+        return storyReplyMapper.insert(SecurityUtil.getCurrentUserId(), storyCommentId, content);
     }
 
-    public List<StoryImage> saveFiles(String basePath, MultipartFile[] files) throws IOException {
+    @Override
+    public int removeComment(Long storyCommentId) {
+        return storyCommentMapper.delete(SecurityUtil.getCurrentUserId(), storyCommentId);
+    }
+
+    @Override
+    public int removeReply(Long storyReplyId) {
+        return storyReplyMapper.delete(SecurityUtil.getCurrentUserId(), storyReplyId);
+    }
+
+    @Override
+    public int editComment(Long storyCommentId, String content) {
+        return storyCommentMapper.update(SecurityUtil.getCurrentUserId(), storyCommentId, content);
+    }
+
+    @Override
+    public int editReply(Long storyReplyId, String content) {
+        return storyReplyMapper.update(SecurityUtil.getCurrentUserId(), storyReplyId, content);
+    }
+
+    @Override
+    public List<StoryResponse.StoryOverviewDto> getAllLikeStory() {
+        return storyLikeMapper.selectStoryIdByUserId(SecurityUtil.getCurrentUserId()).stream()
+                .map((storyId) -> storyMapper.selectByStoryId(storyId))
+                .collect(Collectors.toList()).stream()
+                .map(this::getStoryOverview)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> saveFiles(String basePath, MultipartFile[] imageFiles) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         String uploadPath = basePath + File.separator + yyyyMm;
         File directory = new File(uploadPath);
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        List<StoryImage> imageInfoList = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String originalFileName = file.getOriginalFilename();
-            String storedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-            String fullPath = uploadPath + File.separator + storedFileName;
-            File dest = new File(fullPath);
+        List<String> images = new ArrayList<>();
+        for (MultipartFile file : imageFiles) {
+            String storedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String storyImage = uploadPath + File.separator + storedFileName;
+            File dest = new File(storyImage);
             file.transferTo(dest);
-            StoryImage storyImage = new StoryImage();
-            storyImage.setStoryImageName(originalFileName);
-            storyImage.setStoryImagePath(fullPath);
-            imageInfoList.add(storyImage);
+            images.add(storyImage);
         }
-        return imageInfoList;
+        return images;
     }
 
-    private void setStoryInfo(StoryResponseDto.StoryInfo storyInfo) {
-        storyInfo.setHashtags(storyHashTagMapper.selectHashTagByStoryId(storyInfo.getStoryId()));
-        storyInfo.setTags(storyTagMapper.selectUserIdByStoryId(storyInfo.getStoryId()));
-        storyInfo.setImages(storyImageMapper.selectAllByStoryId(storyInfo.getStoryId()));
-        storyInfo.setLikeCount(storyLikeMapper.selectCountByStoryId(storyInfo.getStoryId()));
-        List<StoryComment> storyCommentList = storyCommentMapper.selectCommentByStoryId(storyInfo.getStoryId());
-        List<StoryResponseDto.Comment> comments = storyCommentList.stream()
+    private StoryResponse.StoryDetailDto getStoryDetail(Story story) {
+        List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
+        List<String> tags = storyTagMapper.selectUserIdByStoryId(story.getStoryId());
+        List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
+        Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
+        boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
+        User user = userMapper.selectByUserId(story.getUserId()).get();
+        List<StoryResponse.StoryCommentDto> storyComments = storyCommentMapper.selectByStoryId(story.getStoryId()).stream()
                 .map(storyComment -> {
-                    User user = userMapper.selectById(storyComment.getUserId()).get();
-                    List<StoryReply> storyReplies = storyCommentMapper.selectReplyByStoryCommentId(storyComment.getStoryCommentId());
-                    return StoryResponseDto.Comment.from(user, storyComment, StoryResponseDto.Reply.from(user, storyReplies));
+                    List<StoryResponse.StoryReplyDto> replies = storyReplyMapper.selectByStoryCommentId(storyComment.getStoryCommentId()).stream()
+                            .map(storyReply -> StoryResponse.StoryReplyDto.toResponseDto(userMapper.selectByUserId(storyReply.getUserId()).get(), storyReply))
+                            .collect(Collectors.toList());
+                    return StoryResponse.StoryCommentDto.toResponseDto(userMapper.selectByUserId(storyComment.getUserId()).get(), storyComment, replies);
                 })
                 .collect(Collectors.toList());
-        storyInfo.setComments(comments);
+        return StoryResponse.StoryDetailDto.toResponseDto(story, user, hashtags, tags, images, storyComments, likeCount, isLike);
+    }
+
+    private StoryResponse.StoryOverviewDto getStoryOverview(Story story) {
+        List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
+        List<String> tags = storyTagMapper.selectUserIdByStoryId(story.getStoryId());
+        List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
+        Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
+        boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
+        User user = userMapper.selectByUserId(story.getUserId()).get();
+        return StoryResponse.StoryOverviewDto.toResponseDto(story, hashtags, tags, images, likeCount, isLike, user);
     }
 }

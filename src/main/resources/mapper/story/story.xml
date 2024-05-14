@@ -2,12 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.tinyhappytrip.story.mapper.StoryMapper">
-
-    <insert id="insert" parameterType="com.tinyhappytrip.story.dto.StoryRequestDto$Create" useGeneratedKeys="true"
-            keyProperty="create.storyId">
+    <insert id="insert" parameterType="com.tinyhappytrip.story.domain.Story" useGeneratedKeys="true"
+            keyProperty="story.storyId">
         INSERT INTO stories (user_id, content, weather, emotion, location, scope, latitude, longitude)
-        VALUES (#{userId}, #{create.content}, #{create.weather}, #{create.emotion}, #{create.location}, #{create.scope},
-                #{create.latitude}, #{create.longitude})
+        VALUES (#{userId}, #{story.content}, #{story.weather}, #{story.emotion}, #{story.location}, #{story.scope},
+                #{story.latitude}, #{story.longitude})
     </insert>
 
     <delete id="delete">

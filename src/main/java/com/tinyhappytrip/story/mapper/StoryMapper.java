@@ -1,18 +1,17 @@
 package com.tinyhappytrip.story.mapper;
 
 import com.tinyhappytrip.story.domain.Story;
-import com.tinyhappytrip.story.dto.StoryRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface StoryMapper {
-    void insert(Long userId, StoryRequestDto.Create create);
+    void insert(Long userId, Story story);
 
     int delete(Long storyId, Long userId);
 
-    int update(Long storyId, Long userId, StoryRequestDto.Update story);
+    int update(Long storyId, Long userId, Story story);
 
     List<Story> selectAllByUserId(Long userId);
 

@@ -1,19 +1,18 @@
 package com.tinyhappytrip.story.mapper;
 
 import com.tinyhappytrip.story.domain.StoryComment;
-import com.tinyhappytrip.story.domain.StoryReply;
-import com.tinyhappytrip.story.dto.StoryRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface StoryCommentMapper {
-    int insert(Long storyId, String type, Long userId, StoryRequestDto.Comment comment);
+    int insert(Long userId, Long storyId, String content);
 
-    int delete(Long storyCommentId, Long userId);
+    int delete(Long userId, Long storyCommentId);
 
-    List<StoryComment> selectCommentByStoryId(Long storyId);
+    List<StoryComment> selectByStoryId(Long storyId);
 
-    List<StoryReply> selectReplyByStoryCommentId(Long storyCommentId);
+    int update(Long userId, Long storyCommentId, String content);
+
 }

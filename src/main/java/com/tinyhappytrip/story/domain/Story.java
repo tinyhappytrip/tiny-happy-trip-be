@@ -1,10 +1,13 @@
 package com.tinyhappytrip.story.domain;
 
 import com.tinyhappytrip.story.domain.enums.Scope;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class Story {
     private Long storyId;
     private Long userId;

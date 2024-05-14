@@ -3,14 +3,8 @@
 
 <mapper namespace="com.tinyhappytrip.story.mapper.StoryCommentMapper">
     <insert id="insert">
-        <if test="type == 'comment'">
-            INSERT INTO story_comments (user_id, story_id, content)
-            VALUES (#{userId}, #{storyId}, #{comment.content})
-        </if>
-        <if test="type == 'reply'">
-            INSERT INTO story_comments (story_reply_id ,user_id, story_id, content)
-            VALUES (#{comment.storyReplyId}, #{userId}, #{storyId}, #{comment.content})
-        </if>
+        INSERT INTO story_comments (user_id, story_id, content)
+        VALUES (#{userId}, #{storyId}, #{content})
     </insert>
 
     <delete id="delete">
@@ -20,17 +14,34 @@
           AND user_id = #{userId}
     </delete>
 
-    <select id="selectCommentByStoryId">
-        SELECT *
-        FROM story_comments
-        WHERE story_id = #{storyId}
-          AND story_reply_id IS NULL
+    <resultMap id="commentResultMap" type="com.tinyhappytrip.story.domain.StoryComment">
+        <id property="storyCommentId" column="story_comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="storyId" column="story_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <collection property="replies" resultMap="replyResultMap"/>
+    </resultMap>
+
+    <resultMap id="replyResultMap" type="com.tinyhappytrip.story.domain.StoryReply">
+        <id property="storyReplyId" column="story_reply_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectByStoryId" resultMap="commentResultMap">
+        SELECT c.*, r.*
+        FROM story_comments c
+                 LEFT JOIN story_replies r ON c.story_comment_id = r.story_comment_id
+        WHERE c.story_id = #{storyId}
+        ORDER BY c.created_at ASC, r.created_at ASC
     </select>
 
-
-    <select id="selectReplyByStoryCommentId">
-        SELECT *
-        FROM story_comments
-        WHERE story_reply_id = #{storyCommentId}
-    </select>
+    <update id="update">
+        Update story_comments
+        SET content = #{content}
+        WHERE user_id = #{userId}
+          AND story_comment_id = #{storyCommentId}
+    </update>
 </mapper>
