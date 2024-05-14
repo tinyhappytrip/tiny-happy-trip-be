@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    // POST
+    int insertPlaylist(PlaylistRequestDto.Create playlist);
+    int insertPlaylistLike(String id, int playlistId);
+
+    // PUT
+    int updatePlaylist(PlaylistRequestDto.Update playlist);
+
+    // GET
+    PlaylistResponseDto.Playlist selectPlaylistById(int id);
+    List<PlaylistResponseDto.Playlist> selectPlaylistsByRecommend();
+    List<PlaylistResponseDto.Playlist> selectMyPlaylists();
+    List<PlaylistResponseDto.Playlist> selectPlaylistsByLike();
+        <select id="selectAttractionByContentId" parameterType="int" resultType="com.ssafy.trip.attraction.model.dto.AttractionResponseDto$Attraction">
+        <include refid="select-attraction"/>
+        WHERE content_id=#{contentId}
+    </select>
+CREATE TABLE `playlists` (
+	`playlist_id`	INT AUTO_INCREMENT PRIMARY KEY	NOT NULL,
+	`user_id`	INT	NOT NULL,
+	`title`	VARCHAR(50)	NOT NULL,
+	`description`	VARCHAR(200)	NULL,
+	`scope`	ENUM('ALL, PRIVATE, FOLLOWER')	NOT NULL,
+	`post_time`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+);
+    public static class Create {
+        private String title;
+        private String description;
+        private AccessLevel accessLevel;
+        private List<Integer> storyIds;
+        private List<String> tags;
+        private String musicQuery;
+    }
+-->
+
+<mapper namespace="com.tinyhappytrip.playlist.mapper.PlaylistMapper">
+    <insert id="insertPlaylist" parameterType="com.tinyhappytrip.playlist.dto.PlaylistRequestDto$Create">
+        insert into playlists (user_id, title, description, scope)
+        values (${title}, ${description}, ${accessLevel}, ${accessLevel})
+    </insert>
+</mapper>

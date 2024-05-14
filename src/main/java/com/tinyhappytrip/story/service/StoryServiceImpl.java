@@ -47,6 +47,7 @@ public class StoryServiceImpl implements StoryService {
             storyImageMapper.insert(create);
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return 0;
         }
     }
@@ -126,9 +127,11 @@ public class StoryServiceImpl implements StoryService {
         }
         List<StoryImage> imageInfoList = new ArrayList<>();
         for (MultipartFile file : files) {
+            System.out.println(file);
             String originalFileName = file.getOriginalFilename();
             String storedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
             String fullPath = uploadPath + File.separator + storedFileName;
+            System.out.println(fullPath);
             File dest = new File(fullPath);
             file.transferTo(dest);
             StoryImage storyImage = new StoryImage();

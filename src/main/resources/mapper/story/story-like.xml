@@ -29,4 +29,5 @@
         <include refid="count"></include>
         WHERE story_id = #{storyId}
     </select>
+
 </mapper>
