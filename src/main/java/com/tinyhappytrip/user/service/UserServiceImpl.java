@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,31 +36,30 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public JwtToken login(UserRequest.Login login) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
+    public JwtToken login(UserRequest.LoginDto loginDto) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
-    public int join(UserRequest.Join join) {
-        join.setPassword(passwordEncoder.encode(join.getPassword()));
-        return userMapper.insert(join);
+    public int join(UserRequest.JoinDto joinDto) {
+        joinDto.setPassword(passwordEncoder.encode(joinDto.getPassword()));
+        return userMapper.insert(joinDto.toEntity());
     }
 
     @Override
     public boolean validate(String type, String value) {
-        return userMapper.selectTypeByValue(type, value).isPresent();
+        return userMapper.selectByTypeAndValue(type, value).isPresent();
     }
 
     @Override
-    public int editUserInfo(UserRequest.Edit edit) {
-        Long userId = SecurityUtil.getCurrentUserId();
-        edit.setUserId(userId);
-        if (edit.getPassword() != null) {
-            edit.setPassword(passwordEncoder.encode(edit.getPassword()));
+    public int editUserInfo(UserRequest.EditDto editDto) {
+        editDto.setUserId(SecurityUtil.getCurrentUserId());
+        if (editDto.getPassword() != null) {
+            editDto.setPassword(passwordEncoder.encode(editDto.getPassword()));
         }
-        return userMapper.update(edit);
+        return userMapper.update(editDto.toEntity());
     }
 
     @Override
@@ -67,14 +68,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse.UserInfo getUser(Long userId) {
-        return userMapper.selectById(userId)
-                .map(user -> {
-                    UserResponse.UserInfo userInfo = UserResponse.UserInfo.from(user);
-                    userInfo.setFollowerCount(followMapper.selectFollowCountByUserId("follower", userId));
-                    userInfo.setFollowingCount(followMapper.selectFollowCountByUserId("followee", userId));
-                    return userInfo;
-                })
+    public UserResponse.UserDto getUser(Long userId) {
+        return userMapper.selectByUserId(userId)
+                .map(user -> UserResponse.UserDto.toUserDto(
+                        user,
+                        followMapper.selectFollowCountByUserId("follower", userId),
+                        followMapper.selectFollowCountByUserId("followee", userId)))
                 .orElse(null);
     }
 
@@ -95,29 +94,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Long> getFollowList(String type, Long userId) {
-        return followMapper.selectAllByUserId(type, userId);
+    public List<UserResponse.FollowUserDto> getFollowList(String type, Long userId) {
+        return followMapper.selectAllByUserId(type, userId).stream()
+                .map(followId -> userMapper.selectByUserId(followId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(UserResponse.FollowUserDto::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void uploadProfileImage(String basePath, MultipartFile profileImage) throws IOException {
+    public void uploadUserImage(String basePath, MultipartFile userImageFile) throws IOException {
         Long userId = SecurityUtil.getCurrentUserId();
         deletePreviousImage(userId);
-        String originalFileName = profileImage.getOriginalFilename();
-        String storedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-        String fullPath = Paths.get(basePath, storedFileName).toString();
-        File storedFile = new File(fullPath);
-        userMapper.updateProfileImage(userId, storedFileName, fullPath);
-        profileImage.transferTo(storedFile);
+        String storedFileName = UUID.randomUUID().toString() + "_" + userImageFile.getOriginalFilename();
+        String userImage = Paths.get(basePath, storedFileName).toString();
+        File storedFile = new File(userImage);
+        userMapper.updateUserImage(userId, userImage);
+        userImageFile.transferTo(storedFile);
     }
 
     private void deletePreviousImage(Long userId) {
-        User user = userMapper.selectById(userId)
+        User user = userMapper.selectByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        String profileImagePath = user.getProfileImagePath();
-        if (!profileImagePath.equals("default.jpg")) {
-            File previousImageFile = new File(profileImagePath);
+        String userImage = user.getUserImage();
+        if (!userImage.equals("C:\\tinyhappytrip\\user\\default.jpg")) {
+            File previousImageFile = new File(userImage);
             if (previousImageFile.exists()) {
                 previousImageFile.delete();
             }

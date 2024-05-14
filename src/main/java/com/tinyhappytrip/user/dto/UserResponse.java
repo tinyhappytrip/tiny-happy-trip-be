@@ -1,48 +1,54 @@
 package com.tinyhappytrip.user.dto;
 
-import com.tinyhappytrip.user.domain.enums.SocialType;
 import com.tinyhappytrip.user.domain.User;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 public class UserResponse {
 
     @Getter
     @Setter
     @Builder
-    public static class UserInfo {
+    public static class UserDto {
         private Long userId;
         private String email;
         private String nickname;
-        private String profileImageName;
+        private String userImage;
         private String introduction;
         private SocialType socialType;
-        private int followerCount;
-        private int followingCount;
+        private Long followerCount;
+        private Long followingCount;
 
-        public static UserInfo from(User user) {
-            return UserInfo.builder()
+        public static UserDto toUserDto(User user, Long followerCount, Long followingCount) {
+            return UserDto.builder()
                     .userId(user.getUserId())
                     .email(user.getEmail())
                     .nickname(user.getNickname())
-                    .profileImageName(user.getProfileImageName())
+                    .userImage(user.getUserImage())
                     .introduction(user.getIntroduction())
                     .socialType(user.getSocialType())
+                    .followerCount(followerCount)
+                    .followingCount(followingCount)
                     .build();
         }
     }
 
     @Getter
     @Setter
-    public static class Follow {
-        private List<Long> userId;
-    }
+    @Builder
+    public static class FollowUserDto {
+        private Long userId;
+        private String nickname;
+        private String userImage;
 
-    @Getter
-    @Setter
-    public static class Followee {
+        public static FollowUserDto toUserDto(User user) {
+            return FollowUserDto.builder()
+                    .userId(user.getUserId())
+                    .nickname(user.getNickname())
+                    .userImage(user.getUserImage())
+                    .build();
+        }
     }
 }

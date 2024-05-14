@@ -12,14 +12,16 @@ import java.util.Collections;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class User implements UserDetails {
     private Long userId;
     private String email;
     private String password;
     private String birthDate;
     private String nickname;
-    private String profileImageName;
-    private String profileImagePath;
+    private String userImage;
     private Role role;
     private String introduction;
     private SocialType socialType;
