@@ -7,9 +7,8 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
     `user_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     `email` VARCHAR(40) UNIQUE NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `birthdate` DATE NOT NULL,
-    `nickname` VARCHAR(10) NULL,
+    `password` VARCHAR(255) NULL,
+    `nickname` VARCHAR(10) NULL UNIQUE,
     `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
     `introduction` VARCHAR(30) NULL,
     `social_type` ENUM('NAVER', 'KAKAO', 'GOOGLE', 'EMAIL') NOT NULL,
@@ -35,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `tokens` (
 
 SELECT * FROM users;
 SELECT * FROM follows;
+SELECT * FROM users WHERE email ='mrcsbin@naver.com';
 
  /*이 라인 삭제하고 테스트--; 
 INSERT INTO `users` (`email`, `password`, `birthDate`, `nickname`, `role`, `introduction`, `social_type`) VALUES ('user', '1234', NOW(), 'user', 'USER', '안녕', 'NAVER');

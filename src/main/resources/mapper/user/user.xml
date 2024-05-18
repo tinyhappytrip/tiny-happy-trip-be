@@ -8,9 +8,15 @@
         WHERE email = #{email}
     </select>
 
+    <select id="selectPasswordByEmail">
+        SELECT password
+        FROM users
+        WHERE email = #{email}
+    </select>
+
     <insert id="insert">
-        INSERT INTO users (email, password, birthdate, nickname, social_type, user_image)
-        VALUES (#{email}, #{password}, #{birthDate}, #{nickname}, #{socialType}, #{userImage})
+        INSERT INTO users (email, password, nickname, social_type, user_image)
+        VALUES (#{email}, #{password}, #{nickname}, #{socialType}, #{userImage})
     </insert>
 
     <select id="selectByTypeAndValue">
@@ -57,4 +63,10 @@
         SET user_image = #{userImage}
         WHERE user_id = #{userId}
     </update>
+
+    <delete id="deleteOAuthUser">
+        DELETE
+        FROM users
+        WHERE email = #{email}
+    </delete>
 </mapper>

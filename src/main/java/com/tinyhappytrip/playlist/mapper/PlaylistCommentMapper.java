@@ -1,9 +1,8 @@
 package com.tinyhappytrip.playlist.mapper;
 
 import com.tinyhappytrip.playlist.domain.PlaylistComment;
-import com.tinyhappytrip.playlist.dto.PlaylistResponseDto;
 import org.apache.ibatis.annotations.Mapper;
-import com.tinyhappytrip.playlist.dto.PlaylistRequestDto;
+
 import java.util.List;
 
 @Mapper

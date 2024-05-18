@@ -22,4 +22,7 @@ public interface UserMapper {
     void updatePassword(String email, String password);
 
     void updateUserImage(Long userId, String userImage);
+
+
+    void deleteOAuthUser(String email);
 }

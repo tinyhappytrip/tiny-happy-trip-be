@@ -2,11 +2,10 @@ package com.tinyhappytrip.smtp.controller;
 
 import com.tinyhappytrip.smtp.dto.EmailRequestDto;
 import com.tinyhappytrip.smtp.service.EmailService;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +19,8 @@ public class EmailController {
         return "" + number;
     }
 
-    @PostMapping("/find-pw")
-    public void findMailSend(@RequestBody EmailRequestDto.findPassword findPassword) throws Exception {
-        int number = emailService.sendMail(findPassword.getEmail());
+    @PostMapping("/find/{email}")
+    public ResponseEntity<SocialType> findMailSend(@PathVariable String email) throws Exception {
+        return ResponseEntity.ok(emailService.sendPasswordMail(email));
     }
 }

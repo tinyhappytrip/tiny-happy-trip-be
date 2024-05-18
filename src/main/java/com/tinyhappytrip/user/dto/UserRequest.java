@@ -4,6 +4,7 @@ import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.domain.enums.SocialType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 public class UserRequest {
 
@@ -19,7 +20,6 @@ public class UserRequest {
     public static class JoinDto {
         private String email;
         private String password;
-        private String birthDate;
         private String nickname;
         private SocialType socialType = SocialType.EMAIL;
         private String userImage = "C:\\tinyhappytrip\\user\\default.jpg";
@@ -28,7 +28,6 @@ public class UserRequest {
             return User.builder()
                     .email(email)
                     .password(password)
-                    .birthDate(birthDate)
                     .nickname(nickname)
                     .socialType(socialType)
                     .userImage(userImage)

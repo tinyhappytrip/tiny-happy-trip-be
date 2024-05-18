@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,25 +35,27 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic(HttpBasicConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
+                .formLogin(FormLoginConfigurer::disable)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(authorize ->
-//                        authorize
-//                                .requestMatchers("/mail/**").permitAll()
-//                                .requestMatchers("/users/validate").permitAll()
-//                                .requestMatchers("/users/login").permitAll()
-//                                .requestMatchers("/users/signup").permitAll()
-//                                .requestMatchers("/users/**").permitAll()
-//                                .requestMatchers("/admin/**").hasRole("ADMIN")
-//                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
-//                                .anyRequest().permitAll()
-//                )
-//                .oauth2Login(configure ->
-//                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
-//                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
-//                                .successHandler(oAuth2AuthenticationSuccessHandler)
-//                                .failureHandler(oAuth2AuthenticationFailureHandler)
-//                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class).build();
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers("/mail/**").permitAll()
+                                .requestMatchers("/users/validate").permitAll()
+                                .requestMatchers("/users/login").permitAll()
+                                .requestMatchers("/users/signup").permitAll()
+                                .requestMatchers("/users/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
+                                .anyRequest().permitAll()
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(configure ->
+                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                                .failureHandler(oAuth2AuthenticationFailureHandler)
+                )
+                .build();
     }
 
     @Bean

@@ -21,10 +21,10 @@ public class NaverOAuth2UserInfo implements OAuth2UserInfo {
         this.id = (String) this.attributes.get("id");
         this.email = (String) this.attributes.get("email");
         this.name = (String) this.attributes.get("name");
+        this.nickName = (String) this.attributes.get("nickname");
         this.firstName = null;
         this.lastName = null;
-        this.nickName = (String) attributes.get("nickname");
-        this.profileImageUrl = (String) attributes.get("profile_image");
+        this.profileImageUrl = (String) this.attributes.get("profile_image");
     }
 
     @Override
