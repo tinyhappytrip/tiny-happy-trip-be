@@ -1,20 +1,26 @@
 package com.tinyhappytrip.oauth2.service;
 
 import com.tinyhappytrip.oauth2.user.OAuth2UserInfo;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class OAuth2UserPrincipal implements OAuth2User, UserDetails {
-
     private final OAuth2UserInfo userInfo;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public OAuth2UserPrincipal(OAuth2UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public OAuth2UserPrincipal(OAuth2UserInfo oAuth2UserInfo, Collection<? extends GrantedAuthority> authorities) {
+        this.userInfo = oAuth2UserInfo;
+        this.authorities = authorities;
     }
 
     @Override
@@ -24,7 +30,7 @@ public class OAuth2UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getUsername() {
-        return userInfo.getEmail();
+        return userInfo.getId();
     }
 
     @Override
@@ -54,15 +60,11 @@ public class OAuth2UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return authorities;
     }
 
     @Override
     public String getName() {
         return userInfo.getEmail();
-    }
-
-    public OAuth2UserInfo getUserInfo() {
-        return userInfo;
     }
 }

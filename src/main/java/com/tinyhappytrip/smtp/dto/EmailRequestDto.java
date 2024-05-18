@@ -4,16 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class EmailRequestDto {
-
     @Getter
     @Setter
     public static class SignUp {
-        private String email;
-    }
-
-    @Getter
-    @Setter
-    public static class findPassword {
         private String email;
     }
 }

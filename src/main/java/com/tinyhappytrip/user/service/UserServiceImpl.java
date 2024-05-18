@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,14 +38,20 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public JwtToken login(UserRequest.LoginDto loginDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        return jwtTokenProvider.generateToken(authentication);
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            return jwtTokenProvider.generateToken(authentication);
+        } catch (AuthenticationException e) {
+            return null;
+        }
     }
 
     @Override
     public int join(UserRequest.JoinDto joinDto) {
-        joinDto.setPassword(passwordEncoder.encode(joinDto.getPassword()));
+        if (joinDto.getPassword() != null) {
+            joinDto.setPassword(passwordEncoder.encode(joinDto.getPassword()));
+        }
         return userMapper.insert(joinDto.toEntity());
     }
 

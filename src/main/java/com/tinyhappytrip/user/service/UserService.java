@@ -1,6 +1,7 @@
 package com.tinyhappytrip.user.service;
 
 import com.tinyhappytrip.security.jwt.JwtToken;
+import com.tinyhappytrip.user.domain.enums.SocialType;
 import com.tinyhappytrip.user.dto.UserRequest;
 import com.tinyhappytrip.user.dto.UserResponse;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,7 @@
-DROP TABLE IF EXISTS `playlist_hashtags`;
 DROP TABLE IF EXISTS `playlist_likes`;
 DROP TABLE IF EXISTS `playlist_items`;
-DROP TABLE IF EXISTS `playlists`;
 DROP TABLE IF EXISTS `playlist_comments`;
+DROP TABLE IF EXISTS `playlists`;
 
 CREATE TABLE `playlists` (
     `playlist_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -12,7 +11,7 @@ CREATE TABLE `playlists` (
     `scope` ENUM('PUBLIC', 'PRIVATE', 'FOLLOWER') NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `music_keyword` VARCHAR(50) NULL,
-    `image_path` VARCHAR(255) NULL,
+    `playlist_image` VARCHAR(255) NULL,
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 );
 
@@ -47,4 +46,3 @@ CREATE TABLE `playlist_comments` (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (`playlist_id`) REFERENCES `playlists` (`playlist_id`) ON DELETE CASCADE
 );
-

@@ -25,8 +25,8 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
         this.name = null;
         this.firstName = null;
         this.lastName = null;
-        this.nickName = (String) attributes.get("nickname");
-        this.profileImageUrl = (String) attributes.get("profile_image_url");
+        this.nickName = (String) this.attributes.get("nickname");
+        this.profileImageUrl = (String) this.attributes.get("profile_image_url");
         this.attributes.put("id", id);
         this.attributes.put("email", this.email);
     }

@@ -25,8 +25,8 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody UserRequest.LoginDto loginDto) {
-        JwtToken jwtToken = userService.login(loginDto);
-        return ResponseEntity.status(jwtToken != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(jwtToken);
+        JwtToken token = userService.login(loginDto);
+        return ResponseEntity.ok(token);
     }
 
     // 회원가입
@@ -57,6 +57,7 @@ public class UserController {
     // 회원 정보 가져오기
     @GetMapping("/{userId}")
     public UserResponse.UserDto getUser(@PathVariable Long userId) {
+        System.out.println("userId = " + userId);
         return userService.getUser(userId);
     }
 
