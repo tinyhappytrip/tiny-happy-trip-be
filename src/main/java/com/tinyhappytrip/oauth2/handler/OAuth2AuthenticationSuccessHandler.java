@@ -8,6 +8,7 @@ import com.tinyhappytrip.oauth2.user.OAuth2UserUnlinkManager;
 import com.tinyhappytrip.oauth2.util.CookieUtils;
 import com.tinyhappytrip.security.jwt.JwtToken;
 import com.tinyhappytrip.security.jwt.JwtTokenProvider;
+import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.mapper.UserMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -75,7 +76,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String socialType = provider.getRegistrationId().toUpperCase();
             String email = oAuth2UserInfo.getEmail();
             String userImage = oAuth2UserInfo.getProfileImageUrl();
-            if (!userMapper.selectByEmail(oAuth2UserInfo.getEmail()).isPresent()) {
+            Optional<User> user = userMapper.selectByEmail(oAuth2UserInfo.getEmail());
+            if (user.isEmpty()) {
                 return UriComponentsBuilder.fromUriString("http://localhost:3000/signup?social=true")
                         .queryParam("email", email)
                         .queryParam("userImage", userImage)
@@ -83,7 +85,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                         .build().toUriString();
             }
 
-            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, user.get().getUserId());
 
             log.info("email={}, name={}, nickname={}, accessToken={}, profileImageUrl={}",
                     principal.getUserInfo().getEmail(),

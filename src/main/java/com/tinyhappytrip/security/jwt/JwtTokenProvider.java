@@ -58,6 +58,29 @@ public class JwtTokenProvider {
                 .build();
     }
 
+    public JwtToken generateToken(Authentication authentication, Long userId) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .setIssuedAt(now)
+                .claim("auth", authorities)
+                .setExpiration(expiration)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        String refreshToken = Jwts.builder()
+                .setExpiration(expiration)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return new JwtToken("Bearer", accessToken, refreshToken);
+    }
+
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
         if (claims.get("auth") == null) {
