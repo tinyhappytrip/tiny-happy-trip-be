@@ -1,7 +1,6 @@
 package com.tinyhappytrip.user.service;
 
 import com.tinyhappytrip.security.jwt.JwtToken;
-import com.tinyhappytrip.user.domain.enums.SocialType;
 import com.tinyhappytrip.user.dto.UserRequest;
 import com.tinyhappytrip.user.dto.UserResponse;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,7 @@ public interface UserService {
 
     int join(UserRequest.JoinDto joinDto);
 
-    boolean validate(String type, String value);
+    String validate(String type, String value);
 
     int editUserInfo(UserRequest.EditDto editDto);
 

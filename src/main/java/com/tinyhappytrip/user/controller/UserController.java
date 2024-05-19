@@ -31,14 +31,15 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Integer> join(@RequestBody UserRequest.JoinDto joinDto) {
+    public ResponseEntity<Integer> join(@Value("${image.user}") String basePath, @RequestBody UserRequest.JoinDto joinDto) {
+        joinDto.setUserImage(basePath + "/default.jpg");
         int res = userService.join(joinDto);
         return ResponseEntity.status(res == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(res);
     }
 
     // 중복 검증 false -> 중복된 value 없음 (통과)
     @GetMapping("/validate")
-    public boolean validate(@RequestParam String type, @RequestParam String value) {
+    public String validate(@RequestParam String type, @RequestParam String value) {
         return userService.validate(type, value);
     }
 
@@ -57,7 +58,6 @@ public class UserController {
     // 회원 정보 가져오기
     @GetMapping("/{userId}")
     public UserResponse.UserDto getUser(@PathVariable Long userId) {
-        System.out.println("userId = " + userId);
         return userService.getUser(userId);
     }
 

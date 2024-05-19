@@ -6,12 +6,12 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE IF NOT EXISTS `users` (
     `user_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    `email` VARCHAR(40) UNIQUE NOT NULL,
+    `email` VARCHAR(40) NULL,
     `password` VARCHAR(255) NULL,
-    `nickname` VARCHAR(10) NULL UNIQUE,
+    `nickname` VARCHAR(10) NULL,
     `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
     `introduction` VARCHAR(30) NULL,
-    `social_type` ENUM('NAVER', 'KAKAO', 'GOOGLE', 'EMAIL') NOT NULL,
+    `social_type` ENUM('NAVER', 'KAKAO', 'GOOGLE', 'EMAIL') NULL,
     `user_image` VARCHAR(255) NULL
 );
 

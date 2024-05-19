@@ -2,6 +2,9 @@ spring:
   application:
     name: TinyHappyTrip
 
+  resource:
+    static-locations: file:///C:/tinyhappytrip/user/
+
   security:
     oauth2:
       client:
@@ -98,10 +101,10 @@ youtube:
 image:
   user: /Users/sungbincho/Desktop/tinyhappytrip/user
   story: /Users/sungbincho/Desktop/tinyhappytrip/story
-  playlist: /Users/sungbincho/Desktop/tinyhappytrip/playlist
+  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
 
 # 수민
 #image:
 #  user: /Users/soom/Desktop/tinyhappytrip/user
 #  story: /Users/soom/Desktop/tinyhappytrip/story
-#  playlist: /Users/soom/Desktop/tinyhappytrip/playlist
+#  playlist: /Users/soom/Desktop/tinyhappytrip/collection

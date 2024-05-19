@@ -56,8 +56,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validate(String type, String value) {
-        return userMapper.selectByTypeAndValue(type, value).isPresent();
+    public String validate(String type, String value) {
+        if (userMapper.selectByTypeAndValue(type, value).isPresent()) {
+            User user = userMapper.selectByTypeAndValue(type, value).get();
+            if (type.equals("email")) {
+                return user.getSocialType().toString();
+            } else {
+                return "true";
+            }
+        } else {
+            return "false";
+        }
     }
 
     @Override
