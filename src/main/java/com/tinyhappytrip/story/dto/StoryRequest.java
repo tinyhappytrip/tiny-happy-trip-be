@@ -22,8 +22,6 @@ public class StoryRequest {
         private Scope scope;
         private double latitude;
         private double longitude;
-        private List<String> hashtags;
-        private List<Integer> tags;
         private MultipartFile[] imageFiles;
 
         public Story toEntity() {

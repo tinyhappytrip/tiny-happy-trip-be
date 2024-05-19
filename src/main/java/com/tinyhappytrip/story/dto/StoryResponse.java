@@ -24,7 +24,6 @@ public class StoryResponse {
         private String emotion;
         private String location;
         private List<String> hashtags;
-        private List<String> tags;
         private List<String> images;
         private Long likeCount;
         private boolean isLike;
@@ -32,7 +31,7 @@ public class StoryResponse {
         private String nickname;
         private String userImage;
 
-        public static StoryOverviewDto toResponseDto(Story story, List<String> hashtags, List<String> tags, List<String> images, Long likeCount, boolean isLike, User user) {
+        public static StoryOverviewDto toResponseDto(Story story, List<String> hashtags, List<String> images, Long likeCount, boolean isLike, User user) {
             return StoryOverviewDto.builder()
                     .storyId(story.getStoryId())
                     .userId(story.getUserId())
@@ -42,7 +41,6 @@ public class StoryResponse {
                     .emotion(story.getEmotion())
                     .location(story.getLocation())
                     .hashtags(hashtags)
-                    .tags(tags)
                     .images(images)
                     .likeCount(likeCount)
                     .isLike(isLike)
@@ -67,7 +65,6 @@ public class StoryResponse {
         private double latitude;
         private double longitude;
         private List<String> hashtags;
-        private List<String> tags;
         private List<String> images;
         private List<StoryCommentDto> storyComments;
         private Long likeCount;
@@ -76,7 +73,7 @@ public class StoryResponse {
         private String nickname;
         private String userImage;
 
-        public static StoryDetailDto toResponseDto(Story story, User user, List<String> hashtags, List<String> tags, List<String> images, List<StoryCommentDto> storyComments, Long likeCount, boolean isLike) {
+        public static StoryDetailDto toResponseDto(Story story, User user, List<String> hashtags, List<String> images, List<StoryCommentDto> storyComments, Long likeCount, boolean isLike) {
             return StoryDetailDto.builder()
                     .storyId(story.getStoryId())
                     .userId(story.getUserId())
@@ -89,7 +86,6 @@ public class StoryResponse {
                     .latitude(story.getLatitude())
                     .longitude(story.getLongitude())
                     .hashtags(hashtags)
-                    .tags(tags)
                     .images(images)
                     .storyComments(storyComments)
                     .likeCount(likeCount)

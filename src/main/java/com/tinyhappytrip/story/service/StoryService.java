@@ -33,4 +33,6 @@ public interface StoryService {
     int editReply(Long storyReplyId, String content);
 
     List<StoryResponse.StoryOverviewDto> getAllLikeStory();
+
+    List<StoryResponse.StoryDetailDto> getAllSearchStory(String searchKeyword);
 }

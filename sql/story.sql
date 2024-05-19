@@ -62,15 +62,6 @@ CREATE TABLE IF NOT EXISTS `story_likes` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS `story_tags` (
-    `story_tag_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    `story_id` INT NOT NULL,
-    `user_id` INT NOT NULL,
-    FOREIGN KEY (`story_id`) REFERENCES `stories` (`story_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
-);
-
-SELECT * FROM `story_tags`;
 SELECT * FROM `story_likes`;
 SELECT * FROM `story_comments`;
 SELECT * FROM `story_replies`;
