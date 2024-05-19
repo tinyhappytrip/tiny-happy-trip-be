@@ -2,12 +2,13 @@ package com.tinyhappytrip.user.dto;
 
 import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.domain.enums.SocialType;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
 
 public class UserRequest {
-
     @Setter
     @Getter
     @ToString
@@ -23,7 +24,7 @@ public class UserRequest {
         private String password;
         private String nickname;
         private SocialType socialType = SocialType.EMAIL;
-        private String userImage = "C:\\tinyhappytrip\\user\\default.jpg";
+        private String userImage;
 
         public User toEntity() {
             return User.builder()

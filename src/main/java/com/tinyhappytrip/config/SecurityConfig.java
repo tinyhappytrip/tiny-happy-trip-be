@@ -37,17 +37,17 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers("/mail/**").permitAll()
-                                .requestMatchers("/users/validate").permitAll()
-                                .requestMatchers("/users/login").permitAll()
-                                .requestMatchers("/users/signup").permitAll()
-                                .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
-                                .anyRequest().permitAll()
-                )
+//                .authorizeHttpRequests(authorize ->
+//                        authorize
+//                                .requestMatchers("/mail/**").permitAll()
+//                                .requestMatchers("/users/validate").permitAll()
+//                                .requestMatchers("/users/login").permitAll()
+//                                .requestMatchers("/users/signup").permitAll()
+//                                .requestMatchers("/users/**").permitAll()
+//                                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
+//                                .anyRequest().permitAll()
+//                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(configure ->
                         configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
