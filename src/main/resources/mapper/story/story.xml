@@ -31,23 +31,18 @@
     </select>
 
     <select id="selectUserStoriesByUserId">
-        SELECT *
-        FROM (SELECT s.*
-              FROM stories s
-                       JOIN follows f ON s.user_id = f.followee_id
-              WHERE f.followee_id = #{userId}
-                AND s.scope IN ('FOLLOWER', 'PUBLIC')
-              UNION
-              SELECT *
-              FROM stories
-              WHERE scope = 'PUBLIC') AS combined_stories
-        GROUP BY story_id, created_at, user_id
-        ORDER BY created_at DESC;
+        SELECT * FROM stories
     </select>
 
     <select id="selectByStoryId">
         SELECT *
         FROM stories
         WHERE story_id = #{storyId}
+    </select>
+
+    <select id="selectStoriesBySearchKeyword">
+        SELECT *
+        FROM stories
+        WHERE location LIKE CONCAT('%', #{searchKeyword}, '%')
     </select>
 </mapper>

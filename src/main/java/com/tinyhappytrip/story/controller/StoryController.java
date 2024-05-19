@@ -59,6 +59,14 @@ public class StoryController {
         return ResponseEntity.ok(storyService.getAllLikeStory());
     }
 
+    // 검색 스토리 목록
+    @GetMapping("/search/{searchKeyword}")
+    public ResponseEntity<List<StoryResponse.StoryDetailDto>> getAllSearchStory(@PathVariable String searchKeyword) {
+        System.out.println("search!!: " + searchKeyword);
+        System.out.println(storyService.getAllSearchStory(searchKeyword));
+        return ResponseEntity.ok(storyService.getAllSearchStory(searchKeyword));
+    }
+
     // 스토리 상세
     @GetMapping("/detail/{storyId}")
     public ResponseEntity<StoryResponse.StoryDetailDto> getStory(@PathVariable Long storyId) {
@@ -68,13 +76,15 @@ public class StoryController {
     // 댓글 추가
     @PostMapping("/comments/{storyId}")
     public ResponseEntity<Void> addComment(@PathVariable Long storyId, @RequestBody String content) {
-        return ResponseEntity.status(storyService.addComment(storyId, content) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
+        String newContent = content.substring(1, content.length() - 1);
+        return ResponseEntity.status(storyService.addComment(storyId, newContent) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 답글 추가
     @PostMapping("/replies/{storyCommentId}")
     public ResponseEntity<Void> addReply(@PathVariable Long storyCommentId, @RequestBody String content) {
-        return ResponseEntity.status(storyService.addReply(storyCommentId, content) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
+        String newContent = content.substring(1, content.length() - 1);
+        return ResponseEntity.status(storyService.addReply(storyCommentId, newContent) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 댓글 삭제

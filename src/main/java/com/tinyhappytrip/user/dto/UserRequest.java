@@ -10,6 +10,7 @@ public class UserRequest {
 
     @Setter
     @Getter
+    @ToString
     public static class LoginDto {
         private String email;
         private String password;

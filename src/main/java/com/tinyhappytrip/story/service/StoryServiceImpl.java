@@ -19,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,6 @@ import java.util.stream.Collectors;
 public class StoryServiceImpl implements StoryService {
     private final StoryMapper storyMapper;
     private final StoryHashtagMapper storyHashtagMapper;
-    private final StoryTagMapper storyTagMapper;
     private final StoryImageMapper storyImageMapper;
     private final StoryLikeMapper storyLikeMapper;
     private final StoryCommentMapper storyCommentMapper;
@@ -39,9 +40,19 @@ public class StoryServiceImpl implements StoryService {
         Long userId = SecurityUtil.getCurrentUserId();
         List<String> storyImages = saveFiles(basePath, createDto.getImageFiles());
         Story story = createDto.toEntity();
+
+        // 스캔하여 hashtags 리스트에 단어 추가
+        List<String> hashtags = new ArrayList<>();
+        String content = createDto.getContent();
+        Pattern pattern = Pattern.compile("#\\S+");
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            hashtags.add(matcher.group());
+        }
+
+        System.out.println(hashtags);
         storyMapper.insert(userId, story);
-        storyHashtagMapper.insert(story.getStoryId(), createDto.getHashtags());
-        storyTagMapper.insert(story.getStoryId(), createDto.getTags());
+        storyHashtagMapper.insert(story.getStoryId(), hashtags);
         storyImageMapper.insert(story.getStoryId(), storyImages);
         return 1;
     }
@@ -129,6 +140,20 @@ public class StoryServiceImpl implements StoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<StoryResponse.StoryDetailDto> getAllSearchStory(String searchKeyword) {
+        List<StoryResponse.StoryDetailDto> stories = new ArrayList<>();
+
+        for (Story story: storyMapper.selectStoriesBySearchKeyword(searchKeyword)) {
+            stories.add(getStoryDetail(story));
+        }
+
+        for (long storyId: storyHashtagMapper.selectStoryIdsBySearchKeyword(searchKeyword)) {
+            stories.add(getStoryDetail(storyMapper.selectByStoryId(storyId)));
+        }
+        return stories;
+    }
+
     public List<String> saveFiles(String basePath, MultipartFile[] imageFiles) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         String uploadPath = basePath + File.separator + yyyyMm;
@@ -149,7 +174,6 @@ public class StoryServiceImpl implements StoryService {
 
     private StoryResponse.StoryDetailDto getStoryDetail(Story story) {
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
-        List<String> tags = storyTagMapper.selectUserIdByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
         boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
@@ -162,16 +186,15 @@ public class StoryServiceImpl implements StoryService {
                     return StoryResponse.StoryCommentDto.toResponseDto(userMapper.selectByUserId(storyComment.getUserId()).get(), storyComment, replies);
                 })
                 .collect(Collectors.toList());
-        return StoryResponse.StoryDetailDto.toResponseDto(story, user, hashtags, tags, images, storyComments, likeCount, isLike);
+        return StoryResponse.StoryDetailDto.toResponseDto(story, user, hashtags, images, storyComments, likeCount, isLike);
     }
 
     private StoryResponse.StoryOverviewDto getStoryOverview(Story story) {
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
-        List<String> tags = storyTagMapper.selectUserIdByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
         boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
         User user = userMapper.selectByUserId(story.getUserId()).get();
-        return StoryResponse.StoryOverviewDto.toResponseDto(story, hashtags, tags, images, likeCount, isLike, user);
+        return StoryResponse.StoryOverviewDto.toResponseDto(story, hashtags, images, likeCount, isLike, user);
     }
 }

@@ -95,13 +95,13 @@ youtube:
 #  playlist: C:\\tinyhappytrip\\playlist
 
 # 성빈
-image:
-  user: /Users/sungbincho/Desktop/tinyhappytrip/user
-  story: /Users/sungbincho/Desktop/tinyhappytrip/story
-  playlist: /Users/sungbincho/Desktop/tinyhappytrip/playlist
+#image:
+#  user: /Users/sungbincho/Desktop/tinyhappytrip/user
+#  story: /Users/sungbincho/Desktop/tinyhappytrip/story
+#  playlist: /Users/sungbincho/Desktop/tinyhappytrip/playlist
 
 # 수민
-#image:
-#  user: /Users/soom/Desktop/tinyhappytrip/user
-#  story: /Users/soom/Desktop/tinyhappytrip/story
-#  playlist: /Users/soom/Desktop/tinyhappytrip/playlist
+image:
+  user: /Users/soom/Desktop/tinyhappytrip/user
+  story: /Users/soom/Desktop/tinyhappytrip/story
+  playlist: /Users/soom/Desktop/tinyhappytrip/playlist
