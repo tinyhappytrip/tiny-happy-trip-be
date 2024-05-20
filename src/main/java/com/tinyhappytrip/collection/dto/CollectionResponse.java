@@ -1,8 +1,8 @@
-package com.tinyhappytrip.playlist.dto;
+package com.tinyhappytrip.collection.dto;
 
-import com.tinyhappytrip.playlist.domain.Playlist;
-import com.tinyhappytrip.playlist.domain.PlaylistComment;
-import com.tinyhappytrip.playlist.domain.enums.Scope;
+import com.tinyhappytrip.collection.domain.Collection;
+import com.tinyhappytrip.collection.domain.CollectionComment;
+import com.tinyhappytrip.collection.domain.enums.Scope;
 import com.tinyhappytrip.story.domain.Story;
 import com.tinyhappytrip.user.domain.User;
 import lombok.Builder;
@@ -11,19 +11,19 @@ import lombok.Setter;
 
 import java.util.List;
 
-public class PlaylistResponse {
+public class CollectionResponse {
     @Getter
     @Setter
     @Builder
-    public static class PlaylistInfo {
+    public static class CollectionInfo {
         private Long userId;
-        private Long playlistId;
+        private Long collectionId;
         private String createdAt;
         private String title;
         private String description;
         private Scope scope;
         private List<String> image; // 아이템 여러 개 중 첫번째의 사진 get(0)
-        private List<PlaylistItem> playlistItems;
+        private List<collectionItem> collectionItems;
         private List<Comment> comments;
         private List<String> hashtags;
         private String musicKeyword;
@@ -31,15 +31,15 @@ public class PlaylistResponse {
         private String nickname;
         private String profileImagePath;
 
-        public static PlaylistInfo from(User user, Playlist playlist) {
-            return PlaylistInfo.builder()
-                    .playlistId(playlist.getPlaylistId())
-                    .userId(playlist.getUserId())
-                    .title(playlist.getTitle())
-                    .description(playlist.getDescription())
-                    .scope(playlist.getScope())
-                    .createdAt(playlist.getCreatedAt())
-                    .musicKeyword(playlist.getMusicKeyword())
+        public static CollectionInfo from(User user, Collection collection) {
+            return CollectionInfo.builder()
+                    .collectionId(collection.getCollectionId())
+                    .userId(collection.getUserId())
+                    .title(collection.getTitle())
+                    .description(collection.getDescription())
+                    .scope(collection.getScope())
+                    .createdAt(collection.getCreatedAt())
+                    .musicKeyword(collection.getMusicKeyword())
                     .nickname(user.getNickname())
                     .profileImagePath(user.getUserImage())
                     .build();
@@ -51,20 +51,20 @@ public class PlaylistResponse {
     @Builder
     public static class Comment {
         private Long userId;
-        private Long playlistCommentId;
-        private Long playlistId;
+        private Long collectionCommentId;
+        private Long collectionId;
         private String content;
         private String createdAt;
         private String nickname;
         private String profileImagePath;
 
-        public static Comment from(User user, PlaylistComment playlistComment) {
+        public static Comment from(User user, CollectionComment collectionComment) {
             return Comment.builder()
                     .userId(user.getUserId())
-                    .playlistCommentId(playlistComment.getPlaylistCommentId())
-                    .playlistId(playlistComment.getPlaylistId())
-                    .content(playlistComment.getContent())
-                    .createdAt(playlistComment.getCreatedAt())
+                    .collectionCommentId(collectionComment.getCollectionCommentId())
+                    .collectionId(collectionComment.getCollectionId())
+                    .content(collectionComment.getContent())
+                    .createdAt(collectionComment.getCreatedAt())
                     .nickname(user.getNickname())
                     .profileImagePath(user.getUserImage())
                     .build();
@@ -75,14 +75,14 @@ public class PlaylistResponse {
     @Getter
     @Setter
     @Builder
-    public static class PlaylistItem {
+    public static class collectionItem {
         private Long storyId;
         private String imagePath;
         private String createdAt;
         private String location;
 
-        public static PlaylistItem from(Story story, String imagePath) {
-            return PlaylistItem.builder()
+        public static collectionItem from(Story story, String imagePath) {
+            return collectionItem.builder()
                     .storyId(story.getStoryId())
                     .imagePath(imagePath)
                     .createdAt(story.getCreatedAt())

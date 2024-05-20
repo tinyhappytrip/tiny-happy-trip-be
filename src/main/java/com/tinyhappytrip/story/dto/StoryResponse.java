@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StoryResponse {
 
@@ -95,6 +96,20 @@ public class StoryResponse {
                     .userImage(user.getUserImage())
                     .build();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            StoryDetailDto that = (StoryDetailDto) o;
+            return Objects.equals(storyId, that.storyId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(storyId);
+        }
+
     }
 
     @Getter

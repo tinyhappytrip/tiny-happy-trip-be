@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.collection.mapper.CollectionMapper">
+    <insert id="insert" parameterType="com.tinyhappytrip.collection.domain.Collection"
+            useGeneratedKeys="true"
+            keyProperty="collectionId">
+        INSERT INTO collections (user_id, title, description, scope, music_keyword)
+        VALUES (#{userId}, #{title}, #{description}, #{scope}, #{musicKeyword})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM collections
+        WHERE collection_id=#{collectionId}
+        AND user_id=#{userId}
+    </delete>
+
+    <update id="update">
+        UPDATE collections
+        SET
+        collection_id=#{collectionId},
+        user_id=#{userId},
+        title=#{collection.title},
+        description=#{collection.description},
+        scope=#{collection.scope},
+        music_keyword=#{collection.musicKeyword},
+        image_path=#{collection.imagePath}
+        WHERE collection_id=#{collectionId}
+    </update>
+
+    <select id="selectcollectionBycollectionId">
+        SELECT collection_id, user_id, title, description, scope, created_at, music_keyword, image_path
+        FROM collections
+        WHERE collection_id=#{collectionId}
+    </select>
+
+    <select id="selectUsercollection">
+        SELECT collection_id, user_id, title, description, scope, created_at, music_keyword, image_path
+        FROM collections
+        WHERE user_id=#{userId}
+    </select>
+
+    <select id="selectThreecollection">
+        SELECT collection_id, user_id, title, description, scope, created_at, music_keyword, image_path
+        FROM collections
+        LIMIT 3
+    </select>
+</mapper>

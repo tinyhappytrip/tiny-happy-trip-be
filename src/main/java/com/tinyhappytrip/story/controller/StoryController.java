@@ -50,6 +50,7 @@ public class StoryController {
     // 전체 스토리 목록
     @GetMapping
     public ResponseEntity<List<StoryResponse.StoryDetailDto>> getAllStory() {
+        System.out.println(storyService.getAllStory());
         return ResponseEntity.ok(storyService.getAllStory());
     }
 

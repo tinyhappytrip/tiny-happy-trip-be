@@ -1,7 +1,7 @@
-package com.tinyhappytrip.playlist.dto;
+package com.tinyhappytrip.collection.dto;
 
-import com.tinyhappytrip.playlist.domain.Playlist;
-import com.tinyhappytrip.playlist.domain.enums.Scope;
+import com.tinyhappytrip.collection.domain.Collection;
+import com.tinyhappytrip.collection.domain.enums.Scope;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,25 +10,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public class PlaylistRequest {
+public class CollectionRequest {
     @Getter
     @Setter
-    @Builder
+    @ToString
     public static class CreateDto {
         private Long userId;
-        private Long playlistId;
+        private Long collectionId;
         private String title;
         private String description;
         private Scope scope;
-        private List<Long> playlistItems;
+        private List<Long> collectionItems;
         private String musicKeyword;
         private List<String> hashtags;
-        private MultipartFile imageFile;
 
-        public Playlist toEntity() {
-            return Playlist.builder()
+        public Collection toEntity() {
+            return Collection.builder()
                     .userId(userId)
-                    .playlistId(playlistId)
+                    .collectionId(collectionId)
                     .title(title)
                     .description(description)
                     .scope(scope)
@@ -42,11 +41,11 @@ public class PlaylistRequest {
     @ToString
     public static class Update {
         private Long userId;
-        private Long playlistId;
+        private Long collectionId;
         private String title;
         private String description;
         private Scope scope;
-        private List<Long> playlistItems;
+        private List<Long> collectionItems;
         private String musicKeyword;
         private List<String> hashtags;
         private MultipartFile image;
@@ -55,8 +54,8 @@ public class PlaylistRequest {
     @Getter
     @Setter
     public static class Comment {
-        private Long playlistCommentId;
-        private Long playlistId;
+        private Long collectionCommentId;
+        private Long collectionId;
         private String content;
     }
 }

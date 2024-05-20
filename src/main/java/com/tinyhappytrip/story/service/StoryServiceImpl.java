@@ -16,9 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -50,7 +48,6 @@ public class StoryServiceImpl implements StoryService {
             hashtags.add(matcher.group());
         }
 
-        System.out.println(hashtags);
         storyMapper.insert(userId, story);
         storyHashtagMapper.insert(story.getStoryId(), hashtags);
         storyImageMapper.insert(story.getStoryId(), storyImages);
@@ -133,6 +130,7 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public List<StoryResponse.StoryOverviewDto> getAllLikeStory() {
+        System.out.println(SecurityUtil.getCurrentUserId());
         return storyLikeMapper.selectStoryIdByUserId(SecurityUtil.getCurrentUserId()).stream()
                 .map((storyId) -> storyMapper.selectByStoryId(storyId))
                 .collect(Collectors.toList()).stream()
@@ -142,17 +140,21 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public List<StoryResponse.StoryDetailDto> getAllSearchStory(String searchKeyword) {
-        List<StoryResponse.StoryDetailDto> stories = new ArrayList<>();
+        Set<StoryResponse.StoryDetailDto> storySet = new HashSet<>();
 
-        for (Story story: storyMapper.selectStoriesBySearchKeyword(searchKeyword)) {
-            stories.add(getStoryDetail(story));
+        // selectStoriesBySearchKeyword로 받은 스토리 추가
+        for (Story story : storyMapper.selectStoriesBySearchKeyword(searchKeyword)) {
+            storySet.add(getStoryDetail(story));
         }
 
-        for (long storyId: storyHashtagMapper.selectStoryIdsBySearchKeyword(searchKeyword)) {
-            stories.add(getStoryDetail(storyMapper.selectByStoryId(storyId)));
+        // selectStoryIdsBySearchKeyword로 받은 스토리 추가
+        for (long storyId : storyHashtagMapper.selectStoryIdsBySearchKeyword(searchKeyword)) {
+            storySet.add(getStoryDetail(storyMapper.selectByStoryId(storyId)));
         }
-        return stories;
+
+        return new ArrayList<>(storySet);
     }
+
 
     public List<String> saveFiles(String basePath, MultipartFile[] imageFiles) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
@@ -173,6 +175,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private StoryResponse.StoryDetailDto getStoryDetail(Story story) {
+        System.out.println(SecurityUtil.getCurrentUserId());
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
