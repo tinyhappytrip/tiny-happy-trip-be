@@ -49,7 +49,9 @@ public class StoryServiceImpl implements StoryService {
         }
 
         storyMapper.insert(userId, story);
-        storyHashtagMapper.insert(story.getStoryId(), hashtags);
+        if (!hashtags.isEmpty()) {
+            storyHashtagMapper.insert(story.getStoryId(), hashtags);
+        }
         storyImageMapper.insert(story.getStoryId(), storyImages);
         return 1;
     }
