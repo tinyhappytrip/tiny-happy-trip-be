@@ -32,4 +32,6 @@ public interface UserService {
 
     @Transactional
     void uploadUserImage(String basePath, MultipartFile userImageFile) throws IOException;
+
+    List<UserResponse.UserDto> getUsersBySearchKeyword(String keyword);
 }

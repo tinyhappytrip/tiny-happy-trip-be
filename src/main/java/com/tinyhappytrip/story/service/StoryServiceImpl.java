@@ -89,7 +89,7 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public List<StoryResponse.StoryDetailDto> getAllStory() {
-        return storyMapper.selectUserStoriesByUserId(SecurityUtil.getCurrentUserId())
+        return storyMapper.selectStories()
                 .stream()
                 .map(this::getStoryDetail)
                 .collect(Collectors.toList());
@@ -181,6 +181,8 @@ public class StoryServiceImpl implements StoryService {
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
+        System.out.println(story.getStoryId());
+        System.out.println(story.getUserId());
         boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
         User user = userMapper.selectByUserId(story.getUserId()).get();
         List<StoryResponse.StoryCommentDto> storyComments = storyCommentMapper.selectByStoryId(story.getStoryId()).stream()

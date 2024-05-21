@@ -1,5 +1,6 @@
 package com.tinyhappytrip.user.controller;
 
+import com.tinyhappytrip.collection.dto.CollectionResponse;
 import com.tinyhappytrip.security.jwt.JwtToken;
 import com.tinyhappytrip.user.dto.UserRequest;
 import com.tinyhappytrip.user.dto.UserResponse;
@@ -90,5 +91,13 @@ public class UserController {
     public ResponseEntity<String> uploadUserImage(@Value("${image.user}") String basePath, @RequestParam("userImageFile") MultipartFile userImageFile) throws IOException {
         userService.uploadUserImage(basePath, userImageFile);
         return ResponseEntity.ok("프로필 이미지가 성공적으로 변경되었습니다.");
+    }
+
+
+    // 검색 스토리 목록
+    @GetMapping("/search/{searchKeyword}")
+    public ResponseEntity<List<UserResponse.UserDto>> getAllSearchUsers(@PathVariable String searchKeyword) {
+        System.out.println("search!!: " + searchKeyword);
+        return ResponseEntity.ok(userService.getUsersBySearchKeyword(searchKeyword));
     }
 }

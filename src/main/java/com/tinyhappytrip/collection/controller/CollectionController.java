@@ -21,7 +21,6 @@ public class CollectionController {
     // 플레이리스트 생성하기
     @PostMapping
     public ResponseEntity<Void> createCollection(@RequestBody CollectionRequest.CreateDto createDto) {
-        System.out.println(createDto);
         return ResponseEntity.status(collectionService.createCollection(createDto) == 1 ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 

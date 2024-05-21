@@ -69,4 +69,10 @@
         FROM users
         WHERE email = #{email}
     </delete>
+
+    <select id="selectUsersBySearchKeyword">
+        SELECT *
+        FROM users
+        WHERE nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+    </select>
 </mapper>

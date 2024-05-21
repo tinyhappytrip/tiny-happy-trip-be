@@ -126,7 +126,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public List<CollectionResponse.CollectionInfo> getUserCollection(Long userId) {
         List<CollectionResponse.CollectionInfo> collections = new ArrayList<>();
-        for (Collection collection : collectionMapper.selectUserCollection(userId)) {
+        for (Collection collection : collectionMapper.selectUserCollections(userId)) {
             System.out.println(collection);
             CollectionResponse.CollectionInfo collectionInfo = makecollectionInfo(collection);
             collections.add(collectionInfo);
@@ -149,8 +149,12 @@ public class CollectionServiceImpl implements CollectionService {
     public List<CollectionResponse.CollectionInfo> getCollectionsBySearchKeyword(String keyword) {
         Set<CollectionResponse.CollectionInfo> collectionSet = new HashSet<>();
 
-        for (Long collectionId: collectionHashTagMapper.selectCollectionIdsBySearchKeyword(keyword)) {
+        for (Long collectionId: collectionHashTagMapper.selectHashtagCollectionIdsBySearchKeyword(keyword)) {
             collectionSet.add(makecollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId)));
+        }
+
+        for (Collection collection: collectionMapper.selectCollectionsBySearchKeyword(keyword)) {
+            collectionSet.add(makecollectionInfo(collection));
         }
 
         return new ArrayList<>(collectionSet);
@@ -164,10 +168,8 @@ public class CollectionServiceImpl implements CollectionService {
             collections.add(collectionInfo);
         }
 
-        if (!collections.isEmpty()) {
-            for (Collection collection : collectionMapper.selectThreeCollection()) {
-                collections.add(makecollectionInfo(collection));
-            }
+        for (Collection collection : collectionMapper.selectCollections()) {
+            collections.add(makecollectionInfo(collection));
         }
         return collections;
     }
@@ -213,7 +215,8 @@ public class CollectionServiceImpl implements CollectionService {
         for (Long storyId : items) {
             System.out.println("collection" + " " + collection);
             System.out.println(storyId);
-            System.out.println(storyImageMapper.selectAllByStoryId(storyId));
+            List<String> images = storyImageMapper.selectAllByStoryId(storyId);
+            if (images.isEmpty()) continue;
             collectionItems.add(
                     CollectionResponse.collectionItem.from(
                             storyMapper.selectByStoryId(storyId),

@@ -96,10 +96,10 @@ youtube:
 
 
 # 싸피
-image:
-  user: C:/tinyhappytrip/user
-  story: C:/tinyhappytrip/story
-  collection: C:/tinyhappytrip/collection
+#image:
+#  user: C:/tinyhappytrip/user
+#  story: C:/tinyhappytrip/story
+#  collection: C:/tinyhappytrip/collection
 
 # 성빈
 #image:
@@ -108,7 +108,9 @@ image:
 #  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
 
 # 수민
-#image:
-#  user: /Users/soom/Desktop/tinyhappytrip/user
-#  story: /Users/soom/Desktop/tinyhappytrip/story
-#  collection: /Users/soom/Desktop/tinyhappytrip/collection
+image:
+  user: /Users/soom/Desktop/tinyhappytrip/user
+  story: /Users/soom/Desktop/tinyhappytrip/story
+  collection: /Users/soom/Desktop/tinyhappytrip/collection
+  goto-list: /Users/soom/Desktop/tinyhappytrip/goto
+  default-profile: /Users/soom/Desktop/tinyhappytrip/user/default.jpg

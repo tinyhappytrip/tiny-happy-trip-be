@@ -22,7 +22,7 @@
         WHERE collection_id=#{collectionId}
     </select>
 
-    <select id="selectCollectionIdsBySearchKeyword">
+    <select id="selectHashtagCollectionIdsBySearchKeyword">
         SELECT collection_id
         FROM collection_hashtags
         WHERE hashtag LIKE CONCAT('%', #{searchKeyword}, '%')
