@@ -79,14 +79,22 @@ public class CollectionResponse {
         private Long storyId;
         private String imagePath;
         private String createdAt;
-        private String location;
+        private String placeName;
+        private Long placeId;
+        private String roadAddressName;
+        private double latitude;
+        private double longitude;
 
         public static collectionItem from(Story story, String imagePath) {
             return collectionItem.builder()
                     .storyId(story.getStoryId())
                     .imagePath(imagePath)
                     .createdAt(story.getCreatedAt())
-                    .location(story.getLocation())
+                    .placeName(story.getPlaceName())
+                    .placeId(story.getPlaceId())
+                    .roadAddressName(story.getRoadAddressName())
+                    .latitude(story.getLatitude())
+                    .longitude(story.getLongitude())
                     .build();
         }
     }

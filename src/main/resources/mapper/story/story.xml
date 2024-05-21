@@ -4,8 +4,10 @@
 <mapper namespace="com.tinyhappytrip.story.mapper.StoryMapper">
     <insert id="insert" parameterType="com.tinyhappytrip.story.domain.Story" useGeneratedKeys="true"
             keyProperty="story.storyId">
-        INSERT INTO stories (user_id, content, weather, emotion, location, scope, latitude, longitude)
-        VALUES (#{userId}, #{story.content}, #{story.weather}, #{story.emotion}, #{story.location}, #{story.scope},
+        INSERT INTO stories (user_id, content, weather, emotion, place_name, place_id, road_address_name, scope,
+                             latitude, longitude)
+        VALUES (#{userId}, #{story.content}, #{story.weather}, #{story.emotion}, #{story.placeName}, #{story.placeId},
+                #{story.roadAddressName}, #{story.scope},
                 #{story.latitude}, #{story.longitude})
     </insert>
 
@@ -43,6 +45,6 @@
     <select id="selectStoriesBySearchKeyword">
         SELECT *
         FROM stories
-        WHERE location LIKE CONCAT('%', #{searchKeyword}, '%')
+        WHERE place_name LIKE CONCAT('%', #{searchKeyword}, '%')
     </select>
 </mapper>

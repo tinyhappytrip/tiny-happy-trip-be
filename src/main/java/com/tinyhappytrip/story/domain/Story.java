@@ -15,7 +15,9 @@ public class Story {
     private String content;
     private String weather;
     private String emotion;
-    private String location;
+    private String placeName;
+    private Long placeId;
+    private String roadAddressName;
     private Scope scope;
     private double latitude;
     private double longitude;
