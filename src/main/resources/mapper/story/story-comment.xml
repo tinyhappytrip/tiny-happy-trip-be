@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.story.mapper.StoryCommentMapper">
+    <insert id="insert">
+        INSERT INTO story_comments (user_id, story_id, content)
+        VALUES (#{userId}, #{storyId}, #{content})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM story_comments
+        WHERE story_comment_id = #{storyCommentId}
+          AND user_id = #{userId}
+    </delete>
+
+    <resultMap id="commentResultMap" type="com.tinyhappytrip.story.domain.StoryComment">
+        <id property="storyCommentId" column="story_comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="storyId" column="story_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <collection property="replies" resultMap="replyResultMap"/>
+    </resultMap>
+
+    <resultMap id="replyResultMap" type="com.tinyhappytrip.story.domain.StoryReply">
+        <id property="storyReplyId" column="story_reply_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectByStoryId" resultMap="commentResultMap">
+        SELECT c.*, r.*
+        FROM story_comments c
+                 LEFT JOIN story_replies r ON c.story_comment_id = r.story_comment_id
+        WHERE c.story_id = #{storyId}
+        ORDER BY c.created_at ASC, r.created_at ASC
+    </select>
+
+    <update id="update">
+        Update story_comments
+        SET content = #{content}
+        WHERE user_id = #{userId}
+          AND story_comment_id = #{storyCommentId}
+    </update>
+</mapper>

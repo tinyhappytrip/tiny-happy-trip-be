@@ -16,7 +16,6 @@ public class ImageController {
 
     @GetMapping("/image")
     private ResponseEntity<FileSystemResource> getImage(@RequestParam String path) {
-        System.out.println("path = " + path);
         File file = new File(path);
         if (!file.exists() || !file.isFile()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -27,7 +26,6 @@ public class ImageController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, mimeType);
-        System.out.println(resource);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }

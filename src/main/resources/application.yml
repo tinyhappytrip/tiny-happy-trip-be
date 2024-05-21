@@ -2,6 +2,10 @@ spring:
   application:
     name: TinyHappyTrip
 
+  server:
+    port: 8080
+#    address: 192.168.120.75
+
   resource:
     static-locations: file:///C:/tinyhappytrip/user/
 
@@ -89,13 +93,11 @@ youtube:
   api:
     key: AIzaSyB6MN5BHZp6qCqGtRXJvRgUtc4CpsnL6e8
 
-
-
 # 싸피
-image:
-  user: C:/tinyhappytrip/user
-  story: C:/tinyhappytrip/story
-  collection: C:/tinyhappytrip/collection
+#image:
+#  user: C:/tinyhappytrip/user
+#  story: C:/tinyhappytrip/story
+#  collection: C:/tinyhappytrip/collection
 
 # 성빈
 #image:

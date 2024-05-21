@@ -89,7 +89,7 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public List<StoryResponse.StoryDetailDto> getAllStory() {
-        return storyMapper.selectUserStoriesByUserId(SecurityUtil.getCurrentUserId())
+        return storyMapper.selectStories()
                 .stream()
                 .map(this::getStoryDetail)
                 .collect(Collectors.toList());
@@ -160,7 +160,7 @@ public class StoryServiceImpl implements StoryService {
 
     public List<String> saveFiles(String basePath, MultipartFile[] imageFiles) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        String uploadPath = basePath + File.separator + yyyyMm;
+        String uploadPath = basePath + '/' + yyyyMm;
         File directory = new File(uploadPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -168,7 +168,7 @@ public class StoryServiceImpl implements StoryService {
         List<String> images = new ArrayList<>();
         for (MultipartFile file : imageFiles) {
             String storedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String storyImage = uploadPath + File.separator + storedFileName;
+            String storyImage = uploadPath + '/' + storedFileName;
             File dest = new File(storyImage);
             file.transferTo(dest);
             images.add(storyImage);
@@ -181,6 +181,8 @@ public class StoryServiceImpl implements StoryService {
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
+        System.out.println(story.getStoryId());
+        System.out.println(story.getUserId());
         boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
         User user = userMapper.selectByUserId(story.getUserId()).get();
         List<StoryResponse.StoryCommentDto> storyComments = storyCommentMapper.selectByStoryId(story.getStoryId()).stream()

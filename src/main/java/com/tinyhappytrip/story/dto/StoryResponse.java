@@ -23,7 +23,9 @@ public class StoryResponse {
         private String content;
         private String weather;
         private String emotion;
-        private String location;
+        private String placeName;
+        private Long placeId;
+        private String roadAddressName;
         private List<String> hashtags;
         private List<String> images;
         private Long likeCount;
@@ -40,7 +42,9 @@ public class StoryResponse {
                     .content(story.getContent())
                     .weather(story.getWeather())
                     .emotion(story.getEmotion())
-                    .location(story.getLocation())
+                    .placeName(story.getPlaceName())
+                    .placeId(story.getPlaceId())
+                    .roadAddressName(story.getRoadAddressName())
                     .hashtags(hashtags)
                     .images(images)
                     .likeCount(likeCount)
@@ -61,7 +65,9 @@ public class StoryResponse {
         private String content;
         private String weather;
         private String emotion;
-        private String location;
+        private String placeName;
+        private Long placeId;
+        private String roadAddressName;
         private Scope scope;
         private double latitude;
         private double longitude;
@@ -82,7 +88,9 @@ public class StoryResponse {
                     .content(story.getContent())
                     .weather(story.getWeather())
                     .emotion(story.getEmotion())
-                    .location(story.getLocation())
+                    .placeName(story.getPlaceName())
+                    .roadAddressName(story.getRoadAddressName())
+                    .placeId(story.getPlaceId())
                     .scope(story.getScope())
                     .latitude(story.getLatitude())
                     .longitude(story.getLongitude())

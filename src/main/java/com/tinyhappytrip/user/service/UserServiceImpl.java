@@ -9,6 +9,7 @@ import com.tinyhappytrip.user.dto.UserResponse;
 import com.tinyhappytrip.user.mapper.FollowMapper;
 import com.tinyhappytrip.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,11 +87,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse.UserDto getUser(Long userId) {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        System.out.println(currentUserId +  " " + userId);
         return userMapper.selectByUserId(userId)
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,
                         followMapper.selectFollowCountByUserId("follower", userId),
-                        followMapper.selectFollowCountByUserId("followee", userId)))
+                        followMapper.selectFollowCountByUserId("followee", userId),
+                        followMapper.selectFollow(currentUserId, userId) == 1 ? true : false))
                 .orElse(null);
     }
 
@@ -151,5 +156,20 @@ public class UserServiceImpl implements UserService {
             password.append(allowedChars.charAt(randomIndex));
         }
         return passwordEncoder.encode(password.toString());
+    }
+
+    @Override
+    public List<UserResponse.UserDto> getUsersBySearchKeyword(String keyword) {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        List<UserResponse.UserDto> searchUsersList = new ArrayList<>();
+        System.out.println(currentUserId);
+        searchUsersList.add(userMapper.selectUsersBySearchKeyword(keyword)
+                .map(user -> UserResponse.UserDto.toUserDto(
+                        user,
+                        followMapper.selectFollowCountByUserId("follower", user.getUserId()),
+                        followMapper.selectFollowCountByUserId("followee", user.getUserId()),
+                        Boolean.TRUE.equals(followMapper.selectFollow(currentUserId, user.getUserId()))))
+                .orElse(null));
+        return searchUsersList;
     }
 }

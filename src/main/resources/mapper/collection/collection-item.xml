@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.collection.mapper.CollectionItemMapper">
+    <insert id="insert">
+        INSERT INTO collection_items (collection_id, story_id) VALUES
+        <foreach collection="collectionItems" item="collectionItemId" separator=",">
+            (#{collectionId}, #{collectionItemId})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM collection_items
+        WHERE collection_id=#{collectionId}
+    </delete>
+
+    <select id="selectCollectionItems" resultType="java.lang.Long">
+        SELECT story_id
+        FROM collection_items
+        WHERE collection_id=#{collectionId}
+    </select>
+
+</mapper>

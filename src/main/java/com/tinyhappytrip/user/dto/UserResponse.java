@@ -20,8 +20,9 @@ public class UserResponse {
         private SocialType socialType;
         private Long followerCount;
         private Long followingCount;
+        private boolean isFollowing;
 
-        public static UserDto toUserDto(User user, Long followerCount, Long followingCount) {
+        public static UserDto toUserDto(User user, Long followerCount, Long followingCount, Boolean isFollowing) {
             return UserDto.builder()
                     .userId(user.getUserId())
                     .email(user.getEmail())
@@ -31,6 +32,7 @@ public class UserResponse {
                     .socialType(user.getSocialType())
                     .followerCount(followerCount)
                     .followingCount(followingCount)
+                    .isFollowing(isFollowing)
                     .build();
         }
     }
