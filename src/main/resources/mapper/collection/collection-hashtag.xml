@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.collection.mapper.CollectionHashTagMapper">
+    <insert id="insert">
+        INSERT INTO collection_hashtags (collection_id, hashtag)
+        VALUES
+        <foreach collection="hashtags" item="hashtag" separator=",">
+            (#{collectionId}, #{hashtag})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM collection_hashtags
+        WHERE collection_id=#{collectionId}
+    </delete>
+
+    <select id="selectHashTagsByCollectionId">
+        SELECT hashtag
+        FROM collection_hashtags
+        WHERE collection_id=#{collectionId}
+    </select>
+
+    <select id="selectCollectionIdsBySearchKeyword">
+        SELECT collection_id
+        FROM collection_hashtags
+        WHERE hashtag LIKE CONCAT('%', #{searchKeyword}, '%')
+    </select>
+</mapper>

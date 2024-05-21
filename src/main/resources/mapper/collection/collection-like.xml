@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.collection.mapper.CollectionLikeMapper">
+
+    <select id="selectCountByCollectionIdAndUserId">
+        SELECT COUNT(*)
+        FROM collection_likes
+        WHERE user_id=#{userId} AND collection_id=#{collectionId}
+
+    </select>
+    <insert id="insert">
+        INSERT INTO collection_likes(user_id, collection_id)
+        VALUES (#{userId}, #{collectionId})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM collection_likes
+        WHERE user_id=#{userId} AND collection_id=#{collectionId}
+    </delete>
+
+    <select id="selectCountByCollectionId">
+        SELECT COUNT(*)
+        FROM collection_likes
+        WHERE collection_id=#{collectionId}
+    </select>
+
+    <select id="selectUserLikeCollection">
+        SELECT collection_id
+        FROM collection_likes
+        WHERE user_id=#{userId}
+    </select>
+
+    <select id="selectTopThreeCollection">
+        SELECT collection_id
+        FROM collection_likes
+        GROUP BY collection_id
+        ORDER BY count(*) DESC
+        LIMIT 3
+    </select>
+
+</mapper>

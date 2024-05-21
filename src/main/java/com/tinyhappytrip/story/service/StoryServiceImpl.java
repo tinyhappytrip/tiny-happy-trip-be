@@ -160,7 +160,7 @@ public class StoryServiceImpl implements StoryService {
 
     public List<String> saveFiles(String basePath, MultipartFile[] imageFiles) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        String uploadPath = basePath + File.separator + yyyyMm;
+        String uploadPath = basePath + '/' + yyyyMm;
         File directory = new File(uploadPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -168,7 +168,7 @@ public class StoryServiceImpl implements StoryService {
         List<String> images = new ArrayList<>();
         for (MultipartFile file : imageFiles) {
             String storedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String storyImage = uploadPath + File.separator + storedFileName;
+            String storyImage = uploadPath + '/' + storedFileName;
             File dest = new File(storyImage);
             file.transferTo(dest);
             images.add(storyImage);
