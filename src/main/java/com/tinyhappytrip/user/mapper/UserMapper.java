@@ -25,4 +25,7 @@ public interface UserMapper {
 
 
     void deleteOAuthUser(String email);
+
+    Optional<User> selectUsersBySearchKeyword(String searchKeyword);
+
 }

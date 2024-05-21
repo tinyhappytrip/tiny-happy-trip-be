@@ -30,10 +30,11 @@
         SELECT *
         FROM stories
         WHERE user_id = #{userId}
+        ORDER BY created_at DESC
     </select>
 
-    <select id="selectUserStoriesByUserId">
-        SELECT * FROM stories
+    <select id="selectStories">
+        SELECT * FROM stories ORDER BY created_at DESC
     </select>
 
     <select id="selectByStoryId">
@@ -46,5 +47,6 @@
         SELECT *
         FROM stories
         WHERE place_name LIKE CONCAT('%', #{searchKeyword}, '%')
+        ORDER BY created_at DESC
     </select>
 </mapper>

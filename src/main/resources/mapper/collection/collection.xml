@@ -34,15 +34,23 @@
         WHERE collection_id=#{collectionId}
     </select>
 
-    <select id="selectUserCollection">
+    <select id="selectUserCollections">
         SELECT *
         FROM collections
         WHERE user_id=#{userId}
+        ORDER BY created_at DESC
     </select>
 
-    <select id="selectThreeCollection">
+    <select id="selectCollections">
         SELECT *
         FROM collections
-        LIMIT 3
+        ORDER BY created_at DESC
     </select>
+
+    <select id="selectCollectionsBySearchKeyword">
+        SELECT *
+        FROM collections
+        WHERE title LIKE CONCAT('%', #{searchKeyword}, '%') OR description LIKE CONCAT('%', #{searchKeyword}, '%')
+    </select>
+
 </mapper>

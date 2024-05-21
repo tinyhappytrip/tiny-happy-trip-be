@@ -15,6 +15,7 @@ import java.util.Collections;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class User implements UserDetails {
     private Long userId;
     private String email;

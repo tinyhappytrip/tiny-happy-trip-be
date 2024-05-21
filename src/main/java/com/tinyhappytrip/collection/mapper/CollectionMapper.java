@@ -13,7 +13,9 @@ public interface CollectionMapper {
     int delete(Long userId, Long collectionId);
 
     int update(Long userId, Long collectionId, Collection collection);
+    List<Collection> selectUserCollections(Long userId);
+    List<Collection> selectCollections();
+    List<Collection> selectCollectionsBySearchKeyword(String searchKeyword);
     Collection selectCollectionByCollectionId(Long collectionId);
-    List<Collection> selectUserCollection(Long userId);
-    List<Collection> selectThreeCollection();
+
 }

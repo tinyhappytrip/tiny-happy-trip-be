@@ -9,5 +9,5 @@ public interface CollectionHashTagMapper {
     int insert(Long collectionId, List<String> hashtags);
     int delete(Long collectionId);
     List<String> selectHashTagsByCollectionId(Long collectionId);
-    List<Long> selectCollectionIdsBySearchKeyword(String searchKeyword);
+    List<Long> selectHashtagCollectionIdsBySearchKeyword(String searchKeyword);
 }
