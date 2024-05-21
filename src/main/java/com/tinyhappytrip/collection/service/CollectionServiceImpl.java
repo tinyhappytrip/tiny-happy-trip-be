@@ -189,13 +189,13 @@ public class CollectionServiceImpl implements CollectionService {
 
     private String saveFile(String basePath, MultipartFile imageFile) throws IOException {
         String yyyyMm = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        String uploadPath = basePath + File.separator + yyyyMm;
+        String uploadPath = basePath + '/' + yyyyMm;
         File directory = new File(uploadPath);
         if (!directory.exists()) {
             directory.mkdirs();
         }
         String storedFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-        String fullPath = uploadPath + File.separator + storedFileName;
+        String fullPath = uploadPath + '/' + storedFileName;
         File dest = new File(fullPath);
         imageFile.transferTo(dest); // 파일 저장
         return fullPath;
