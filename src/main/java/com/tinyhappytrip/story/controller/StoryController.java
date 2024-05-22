@@ -56,7 +56,7 @@ public class StoryController {
 
     // 유저가 좋아요 누른 스토리 목록
     @GetMapping("/like")
-    public ResponseEntity<List<StoryResponse.StoryOverviewDto>> getAllLikeStory() {
+    public ResponseEntity<List<StoryResponse.StoryDetailDto>> getAllLikeStory() {
         return ResponseEntity.ok(storyService.getAllLikeStory());
     }
 

@@ -44,6 +44,13 @@ public class UserController {
         return userService.validate(type, value);
     }
 
+    // 비밀 번호 확인
+    @PostMapping("/password")
+    public ResponseEntity<Integer> checkPassword(@RequestBody String password) {
+        int res = userService.checkPassword(password);
+        return ResponseEntity.status(res == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+    }
+
     // 회원 정보 수정
     @PatchMapping
     public ResponseEntity<Integer> editUserInfo(@RequestBody UserRequest.EditDto editDto) {

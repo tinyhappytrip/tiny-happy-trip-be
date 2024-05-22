@@ -72,12 +72,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int checkPassword(String password) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        String newPassword = password.substring(1, password.length() - 1);
+        if (passwordEncoder.matches(newPassword, userMapper.selectByUserId(userId).get().getPassword())) {
+            return 1;
+        } else {
+           return 0;
+        }
+    }
+
+    @Override
     public int editUserInfo(UserRequest.EditDto editDto) {
         editDto.setUserId(SecurityUtil.getCurrentUserId());
         if (editDto.getPassword() != null) {
             editDto.setPassword(passwordEncoder.encode(editDto.getPassword()));
         }
-        return userMapper.update(editDto.toEntity());
+         return userMapper.update(editDto.toEntity());
     }
 
     @Override
@@ -88,7 +99,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse.UserDto getUser(Long userId) {
         Long currentUserId = SecurityUtil.getCurrentUserId();
-        System.out.println(currentUserId +  " " + userId);
         return userMapper.selectByUserId(userId)
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,
@@ -128,7 +138,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void uploadUserImage(String basePath, MultipartFile userImageFile) throws IOException {
         Long userId = SecurityUtil.getCurrentUserId();
-        deletePreviousImage(userId);
+        deletePreviousImage(basePath, userId);
         String storedFileName = UUID.randomUUID().toString() + "_" + userImageFile.getOriginalFilename();
         String userImage = Paths.get(basePath, storedFileName).toString();
         File storedFile = new File(userImage);
@@ -136,11 +146,11 @@ public class UserServiceImpl implements UserService {
         userImageFile.transferTo(storedFile);
     }
 
-    private void deletePreviousImage(Long userId) {
+    private void deletePreviousImage(String basePath, Long userId) {
         User user = userMapper.selectByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         String userImage = user.getUserImage();
-        if (!userImage.equals("C:\\tinyhappytrip\\user\\default.jpg")) {
+        if (!userImage.equals(basePath + "/default.jpg")) {
             File previousImageFile = new File(userImage);
             if (previousImageFile.exists()) {
                 previousImageFile.delete();
@@ -162,7 +172,6 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse.UserDto> getUsersBySearchKeyword(String keyword) {
         Long currentUserId = SecurityUtil.getCurrentUserId();
         List<UserResponse.UserDto> searchUsersList = new ArrayList<>();
-        System.out.println(currentUserId);
         searchUsersList.add(userMapper.selectUsersBySearchKeyword(keyword)
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,
