@@ -50,7 +50,6 @@ public class StoryController {
     // 전체 스토리 목록
     @GetMapping
     public ResponseEntity<List<StoryResponse.StoryDetailDto>> getAllStory() {
-        System.out.println(storyService.getAllStory());
         return ResponseEntity.ok(storyService.getAllStory());
     }
 
@@ -63,8 +62,6 @@ public class StoryController {
     // 검색 스토리 목록
     @GetMapping("/search/{searchKeyword}")
     public ResponseEntity<List<StoryResponse.StoryDetailDto>> getAllSearchStory(@PathVariable String searchKeyword) {
-        System.out.println("search!!: " + searchKeyword);
-        System.out.println(storyService.getAllSearchStory(searchKeyword));
         return ResponseEntity.ok(storyService.getAllSearchStory(searchKeyword));
     }
 

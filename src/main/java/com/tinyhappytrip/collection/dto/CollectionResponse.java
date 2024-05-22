@@ -23,7 +23,7 @@ public class CollectionResponse {
         private String description;
         private Scope scope;
         private List<String> image; // 아이템 여러 개 중 첫번째의 사진 get(0)
-        private List<collectionItem> collectionItems;
+        private List<CollectionItem> CollectionItems;
         private List<Comment> comments;
         private List<String> hashtags;
         private String musicKeyword;
@@ -75,9 +75,9 @@ public class CollectionResponse {
     @Getter
     @Setter
     @Builder
-    public static class collectionItem {
+    public static class CollectionItem {
         private Long storyId;
-        private String imagePath;
+        private List<String> imagePath;
         private String createdAt;
         private String placeName;
         private Long placeId;
@@ -85,8 +85,8 @@ public class CollectionResponse {
         private double latitude;
         private double longitude;
 
-        public static collectionItem from(Story story, String imagePath) {
-            return collectionItem.builder()
+        public static CollectionItem from(Story story, List<String> imagePath) {
+            return CollectionItem.builder()
                     .storyId(story.getStoryId())
                     .imagePath(imagePath)
                     .createdAt(story.getCreatedAt())

@@ -98,15 +98,18 @@ youtube:
 #  user: C:/tinyhappytrip/user
 #  story: C:/tinyhappytrip/story
 #  collection: C:/tinyhappytrip/collection
+#  goto: C:/tinyhappytrip/goto
 
 # 성빈
-#image:
-#  user: /Users/sungbincho/Desktop/tinyhappytrip/user
-#  story: /Users/sungbincho/Desktop/tinyhappytrip/story
-#  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
+image:
+  user: /Users/sungbincho/Desktop/tinyhappytrip/user
+  story: /Users/sungbincho/Desktop/tinyhappytrip/story
+  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
+  goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
 
 # 수민
 #image:
 #  user: /Users/soom/Desktop/tinyhappytrip/user
 #  story: /Users/soom/Desktop/tinyhappytrip/story
 #  collection: /Users/soom/Desktop/tinyhappytrip/collection
+#  goto: /Users/soom/Desktop/tinyhappytrip/goto

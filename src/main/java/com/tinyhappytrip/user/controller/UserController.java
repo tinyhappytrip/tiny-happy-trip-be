@@ -104,7 +104,6 @@ public class UserController {
     // 검색 스토리 목록
     @GetMapping("/search/{searchKeyword}")
     public ResponseEntity<List<UserResponse.UserDto>> getAllSearchUsers(@PathVariable String searchKeyword) {
-        System.out.println("search!!: " + searchKeyword);
         return ResponseEntity.ok(userService.getUsersBySearchKeyword(searchKeyword));
     }
 }

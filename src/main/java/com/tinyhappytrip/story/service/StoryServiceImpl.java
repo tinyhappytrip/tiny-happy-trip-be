@@ -179,12 +179,9 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private StoryResponse.StoryDetailDto getStoryDetail(Story story) {
-        System.out.println(SecurityUtil.getCurrentUserId());
         List<String> hashtags = storyHashtagMapper.selectHashtagByStoryId(story.getStoryId());
         List<String> images = storyImageMapper.selectAllByStoryId(story.getStoryId());
         Long likeCount = storyLikeMapper.selectCountByStoryId(story.getStoryId());
-        System.out.println(story.getStoryId());
-        System.out.println(story.getUserId());
         boolean isLike = storyLikeMapper.selectCountByStoryIdAndUserId(story.getStoryId(), SecurityUtil.getCurrentUserId()) == 1 ? true : false;
         User user = userMapper.selectByUserId(story.getUserId()).get();
         List<StoryResponse.StoryCommentDto> storyComments = storyCommentMapper.selectByStoryId(story.getStoryId()).stream()
