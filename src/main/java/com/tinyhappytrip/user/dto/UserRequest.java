@@ -39,6 +39,7 @@ public class UserRequest {
 
     @Getter
     @Setter
+    @ToString
     public static class EditDto {
         private Long userId;
         private String password;

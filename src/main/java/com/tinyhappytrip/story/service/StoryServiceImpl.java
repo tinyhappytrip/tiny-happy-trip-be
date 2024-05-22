@@ -131,11 +131,12 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<StoryResponse.StoryOverviewDto> getAllLikeStory() {
+    public List<StoryResponse.StoryDetailDto> getAllLikeStory() {
+        System.out.println(SecurityUtil.getCurrentUserId());
         return storyLikeMapper.selectStoryIdByUserId(SecurityUtil.getCurrentUserId()).stream()
                 .map((storyId) -> storyMapper.selectByStoryId(storyId))
                 .collect(Collectors.toList()).stream()
-                .map(this::getStoryOverview)
+                .map(this::getStoryDetail)
                 .collect(Collectors.toList());
     }
 
@@ -167,6 +168,8 @@ public class StoryServiceImpl implements StoryService {
         List<String> images = new ArrayList<>();
         for (MultipartFile file : imageFiles) {
             String storedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            storedFileName = storedFileName.replace(' ', '_').replace(')', '_').replace('(', '_');
+            System.out.println(storedFileName);
             String storyImage = uploadPath + '/' + storedFileName;
             File dest = new File(storyImage);
             file.transferTo(dest);

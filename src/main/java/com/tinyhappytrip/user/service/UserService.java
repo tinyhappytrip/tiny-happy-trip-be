@@ -15,6 +15,7 @@ public interface UserService {
     int join(UserRequest.JoinDto joinDto);
 
     String validate(String type, String value);
+    int checkPassword(String password);
 
     int editUserInfo(UserRequest.EditDto editDto);
 

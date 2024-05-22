@@ -68,7 +68,7 @@ public class CollectionController {
     }
 
     // 내가 좋아요 누른 플레이리스트
-    @GetMapping("/user-like")
+    @GetMapping("/like")
     public ResponseEntity<List<CollectionResponse.CollectionInfo>> getUserLikecollection() {
         return ResponseEntity.ok(collectionService.getUserLikeCollection());
     }
