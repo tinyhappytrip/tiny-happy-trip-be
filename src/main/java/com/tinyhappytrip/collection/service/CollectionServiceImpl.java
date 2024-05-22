@@ -2,7 +2,6 @@ package com.tinyhappytrip.collection.service;//package com.tinyhappytrip.collect
 
 import com.tinyhappytrip.collection.domain.Collection;
 import com.tinyhappytrip.collection.domain.CollectionComment;
-import com.tinyhappytrip.collection.domain.enums.Scope;
 import com.tinyhappytrip.collection.dto.CollectionRequest;
 import com.tinyhappytrip.collection.dto.CollectionResponse;
 import com.tinyhappytrip.collection.mapper.*;
@@ -39,7 +38,6 @@ public class CollectionServiceImpl implements CollectionService {
     public int createCollection(CollectionRequest.CreateDto createDto) {
         try {
             Long userId = SecurityUtil.getCurrentUserId();
-            System.out.println(createDto);
             Collection collection = Collection.builder()
                     .userId(userId)
                     .title(createDto.getTitle())
@@ -77,7 +75,6 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public int updateCollection(String basePath, Long collectionId, CollectionRequest.Update update) {
         Long userId = SecurityUtil.getCurrentUserId();
-        System.out.println(userId);
         try {
             Collection collection = new Collection(
                     userId,
@@ -127,8 +124,7 @@ public class CollectionServiceImpl implements CollectionService {
     public List<CollectionResponse.CollectionInfo> getUserCollection(Long userId) {
         List<CollectionResponse.CollectionInfo> collections = new ArrayList<>();
         for (Collection collection : collectionMapper.selectUserCollections(userId)) {
-            System.out.println(collection);
-            CollectionResponse.CollectionInfo collectionInfo = makecollectionInfo(collection);
+            CollectionResponse.CollectionInfo collectionInfo = makeCollectionInfo(collection);
             collections.add(collectionInfo);
         }
         return collections;
@@ -139,7 +135,7 @@ public class CollectionServiceImpl implements CollectionService {
         List<CollectionResponse.CollectionInfo> collections = new ArrayList<>();
         Long userId = SecurityUtil.getCurrentUserId();
         for (Long collectionId : collectionLikeMapper.selectUserLikeCollection(userId)) {
-            CollectionResponse.CollectionInfo collectionInfo = makecollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
+            CollectionResponse.CollectionInfo collectionInfo = makeCollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
             collections.add(collectionInfo);
         }
         return collections;
@@ -150,11 +146,11 @@ public class CollectionServiceImpl implements CollectionService {
         Set<CollectionResponse.CollectionInfo> collectionSet = new HashSet<>();
 
         for (Long collectionId: collectionHashTagMapper.selectHashtagCollectionIdsBySearchKeyword(keyword)) {
-            collectionSet.add(makecollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId)));
+            collectionSet.add(makeCollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId)));
         }
 
         for (Collection collection: collectionMapper.selectCollectionsBySearchKeyword(keyword)) {
-            collectionSet.add(makecollectionInfo(collection));
+            collectionSet.add(makeCollectionInfo(collection));
         }
 
         return new ArrayList<>(collectionSet);
@@ -164,19 +160,19 @@ public class CollectionServiceImpl implements CollectionService {
     public List<CollectionResponse.CollectionInfo> getTopThreeCollection() {
         List<CollectionResponse.CollectionInfo> collections = new ArrayList<>();
         for (Long collectionId : collectionLikeMapper.selectTopThreeCollection()) {
-            CollectionResponse.CollectionInfo collectionInfo = makecollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
+            CollectionResponse.CollectionInfo collectionInfo = makeCollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
             collections.add(collectionInfo);
         }
 
         for (Collection collection : collectionMapper.selectCollections()) {
-            collections.add(makecollectionInfo(collection));
+            collections.add(makeCollectionInfo(collection));
         }
         return collections;
     }
 
     @Override
     public CollectionResponse.CollectionInfo getCollectionByCollectionId(Long collectionId) {
-        return makecollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
+        return makeCollectionInfo(collectionMapper.selectCollectionByCollectionId(collectionId));
     }
 
     @Override
@@ -203,28 +199,24 @@ public class CollectionServiceImpl implements CollectionService {
         return fullPath;
     }
 
-    private CollectionResponse.CollectionInfo makecollectionInfo(Collection collection) {
+    private CollectionResponse.CollectionInfo makeCollectionInfo(Collection collection) {
         User user = userMapper.selectByUserId(collection.getUserId()).get();
         CollectionResponse.CollectionInfo collectionInfo = CollectionResponse.CollectionInfo.from(user, collection);
         Long collectionId = collectionInfo.getCollectionId();
-        List<CollectionResponse.collectionItem> collectionItems = new ArrayList<>();
-        System.out.println(collectionId);
+        List<CollectionResponse.CollectionItem> CollectionItems = new ArrayList<>();
         // 플레이리스트 내 모든 스토리들을 collectionItem type으로 변경 (collectionItem 대표 사진은 story 사진들 중 가장 앞 사진)
         List<Long> items = collectionItemMapper.selectCollectionItems(collectionId);
-        System.out.println("items.size() = " + items.size());
         for (Long storyId : items) {
-            System.out.println("collection" + " " + collection);
-            System.out.println(storyId);
             List<String> images = storyImageMapper.selectAllByStoryId(storyId);
             if (images.isEmpty()) continue;
-            collectionItems.add(
-                    CollectionResponse.collectionItem.from(
+            CollectionItems.add(
+                    CollectionResponse.CollectionItem.from(
                             storyMapper.selectByStoryId(storyId),
-                            storyImageMapper.selectAllByStoryId(storyId).get(0)
+                            storyImageMapper.selectAllByStoryId(storyId)
                     )
             );
         }
-        collectionInfo.setCollectionItems(collectionItems);
+        collectionInfo.setCollectionItems(CollectionItems);
 
         // 플레이리스트 해시태그 세팅
         List<String> hashtags = collectionHashTagMapper.selectHashTagsByCollectionId(collectionId);

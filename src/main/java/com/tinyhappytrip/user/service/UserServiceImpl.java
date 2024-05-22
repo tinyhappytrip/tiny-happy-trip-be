@@ -88,7 +88,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse.UserDto getUser(Long userId) {
         Long currentUserId = SecurityUtil.getCurrentUserId();
-        System.out.println(currentUserId +  " " + userId);
         return userMapper.selectByUserId(userId)
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,
@@ -128,7 +127,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void uploadUserImage(String basePath, MultipartFile userImageFile) throws IOException {
         Long userId = SecurityUtil.getCurrentUserId();
-        deletePreviousImage(userId);
+        deletePreviousImage(basePath, userId);
         String storedFileName = UUID.randomUUID().toString() + "_" + userImageFile.getOriginalFilename();
         String userImage = Paths.get(basePath, storedFileName).toString();
         File storedFile = new File(userImage);
@@ -136,7 +135,7 @@ public class UserServiceImpl implements UserService {
         userImageFile.transferTo(storedFile);
     }
 
-    private void deletePreviousImage(Long userId) {
+    private void deletePreviousImage(String basePath, Long userId) {
         User user = userMapper.selectByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         String userImage = user.getUserImage();
@@ -162,7 +161,6 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse.UserDto> getUsersBySearchKeyword(String keyword) {
         Long currentUserId = SecurityUtil.getCurrentUserId();
         List<UserResponse.UserDto> searchUsersList = new ArrayList<>();
-        System.out.println(currentUserId);
         searchUsersList.add(userMapper.selectUsersBySearchKeyword(keyword)
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,

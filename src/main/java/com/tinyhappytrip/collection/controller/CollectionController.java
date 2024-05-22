@@ -32,7 +32,7 @@ public class CollectionController {
 
     // 플레이리스트 수정하기
     @PutMapping("/{collectionId}")
-    public ResponseEntity<Integer> updatecollection(@Value("${image.collection}") String basePath,
+    public ResponseEntity<Integer> updateCollection(@Value("${image.collection}") String basePath,
                                                   @PathVariable Long collectionId,
                                                   @ModelAttribute CollectionRequest.Update update) {
         return ResponseEntity.status(collectionService.updateCollection(basePath, collectionId, update) == 1 ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -45,27 +45,25 @@ public class CollectionController {
     }
 
     @GetMapping("/{collectionId}")
-    public ResponseEntity<CollectionResponse.CollectionInfo> getcollection(@PathVariable Long collectionId) {
-        System.out.println("get");
+    public ResponseEntity<CollectionResponse.CollectionInfo> getCollection(@PathVariable Long collectionId) {
         return ResponseEntity.ok(collectionService.getCollectionByCollectionId(collectionId));
     }
 
     // 유저 플레이리스트
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CollectionResponse.CollectionInfo>> getUsercollection(@PathVariable Long userId) {
+    public ResponseEntity<List<CollectionResponse.CollectionInfo>> getUserCollection(@PathVariable Long userId) {
         return ResponseEntity.ok(collectionService.getUserCollection(userId));
     }
 
     // 검색 스토리 목록
     @GetMapping("/search/{searchKeyword}")
     public ResponseEntity<List<CollectionResponse.CollectionInfo>> getAllSearchCollection(@PathVariable String searchKeyword) {
-        System.out.println("search!!: " + searchKeyword);
         return ResponseEntity.ok(collectionService.getCollectionsBySearchKeyword(searchKeyword));
     }
 
     // 추천 플레이리스트 (좋아요 top3)
     @GetMapping("/recommend")
-    public ResponseEntity<List<CollectionResponse.CollectionInfo>> getTopThreecollection() {
+    public ResponseEntity<List<CollectionResponse.CollectionInfo>> getTopThreeCollection() {
         return ResponseEntity.ok(collectionService.getTopThreeCollection());
     }
 
