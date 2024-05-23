@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.chat.mapper.NotificationMapper">
+    <insert id="insertNotification">
+        INSERT INTO notifications (user_id, content)
+        VALUES (#{userId}, #{content})
+    </insert>
+
+    <select id="selectNotifications">
+        SELECT *
+        FROM notifications
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateNotification">
+        UPDATE notifications
+        SET is_read =#{isRead}
+        WHERE notification_id = #{notificationId}
+    </update>
+</mapper>
