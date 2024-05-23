@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `tokens` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 );
 
+
+
 SELECT * FROM users;
 SELECT * FROM follows;
 SELECT * FROM users WHERE email ='mrcsbin@naver.com';

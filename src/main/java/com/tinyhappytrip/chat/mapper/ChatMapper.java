@@ -1,17 +1,20 @@
 package com.tinyhappytrip.chat.mapper;
 
 import com.tinyhappytrip.chat.domain.Chat;
-import org.apache.ibatis.annotations.Mapper;
+import com.tinyhappytrip.chat.domain.ChatRoom;
+import com.tinyhappytrip.chat.dto.ChatRequest;
+import com.tinyhappytrip.chat.dto.ChatResponse;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface ChatMapper {
-    int insert(Long chatRoomId, Chat chat);
+    void insertChatMessage(Chat chat);
 
     List<Chat> selectAllChatBytChatRoomId(Long chatRoomId);
 
-    String selectLastMessageByChatRoomId(Long chatRoomId);
+    Chat selectLastMessageByChatRoomId(Long chatRoomId);
 
     Long selectCountNoneReadCountByChatRoomId(Long userId, Long chatRoomId);
 }

@@ -126,6 +126,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse.FollowUserDto> getFollowList(String type, Long userId) {
+        System.out.println(type);
         return followMapper.selectAllByUserId(type, userId).stream()
                 .map(followId -> userMapper.selectByUserId(followId))
                 .filter(Optional::isPresent)

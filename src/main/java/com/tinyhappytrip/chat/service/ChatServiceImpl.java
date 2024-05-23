@@ -1,5 +1,6 @@
 package com.tinyhappytrip.chat.service;
 
+import com.tinyhappytrip.chat.domain.Chat;
 import com.tinyhappytrip.chat.dto.ChatRequest;
 import com.tinyhappytrip.chat.dto.ChatResponse;
 import com.tinyhappytrip.chat.mapper.ChatMapper;
@@ -8,6 +9,7 @@ import com.tinyhappytrip.security.util.SecurityUtil;
 import com.tinyhappytrip.user.domain.User;
 import com.tinyhappytrip.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,17 +21,18 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRoomMapper chatRoomMapper;
     private final ChatMapper chatMapper;
     private final UserMapper userMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public Long findOrCreateChatRoom(Long participantId2) {
-        Long participantId1 = SecurityUtil.getCurrentUserId();
-        return chatRoomMapper.selectChatRoomIdBetweenUsers(participantId1, participantId2)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> {
-                    chatRoomMapper.insert(participantId1, participantId2);
-                    return chatRoomMapper.selectChatRoomIdBetweenUsers(participantId1, participantId2).get();
-                });
+    public void saveChatMessage(ChatRequest.ChatDto chatDto) {
+        Chat chat = chatDto.toEntity();
+        if (!chatRoomMapper.isExistingChatRoom(chat)) {
+            chatRoomMapper.insertChatRoom(chat);
+        }
+        Long chatRoomId = chatRoomMapper.findChatRoomByParticipants(chat);
+        chat.setChatRoomId(chatRoomId);
+        chatMapper.insertChatMessage(chat);
+        chatDto.setChatRoomId(chatRoomId);
     }
 
     @Override
@@ -39,9 +42,9 @@ public class ChatServiceImpl implements ChatService {
                 .map(chatRoom -> {
                     Long otherParticipantId = (chatRoom.getParticipantId1() == userId) ? chatRoom.getParticipantId2() : chatRoom.getParticipantId1();
                     User otherParticipant = userMapper.selectByUserId(otherParticipantId).get();
-                    String latestMessage = chatMapper.selectLastMessageByChatRoomId(chatRoom.getChatRoomId());
+                    Chat chat = chatMapper.selectLastMessageByChatRoomId(chatRoom.getChatRoomId());
                     Long noneReadCount = chatMapper.selectCountNoneReadCountByChatRoomId(userId, chatRoom.getChatRoomId());
-                    return ChatResponse.ChatRoomDto.toChatRoomDto(chatRoom, otherParticipant, latestMessage, noneReadCount);
+                    return ChatResponse.ChatRoomDto.toChatRoomDto(chatRoom, otherParticipant, chat.getMessage(), noneReadCount, chat.getSentAt());
                 })
                 .collect(Collectors.toList());
     }
@@ -54,7 +57,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public int saveChat(Long chatRoomId, ChatRequest.ChatDto chat) {
-        return chatMapper.insert(chatRoomId, chat.toEntity());
+    public void sendChatMessage(ChatRequest.ChatDto chatDto) {
+        messagingTemplate.convertAndSend("/sub/chats/" + chatDto.getChatRoomId(), chatDto);
+    }
+
+    @Override
+    public void sendNotification(Long receiverId, String content) {
+        messagingTemplate.convertAndSend("/sub/notifications/" + receiverId, content);
     }
 }

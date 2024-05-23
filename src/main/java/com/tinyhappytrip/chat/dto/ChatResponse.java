@@ -2,6 +2,7 @@ package com.tinyhappytrip.chat.dto;
 
 import com.tinyhappytrip.chat.domain.Chat;
 import com.tinyhappytrip.chat.domain.ChatRoom;
+import com.tinyhappytrip.chat.domain.Notification;
 import com.tinyhappytrip.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +20,9 @@ public class ChatResponse {
         private String userImage;
         private String lastMessage;
         private Long noneReadCount;
+        private String lastSentAt;
 
-        public static ChatResponse.ChatRoomDto toChatRoomDto(ChatRoom chatRoom, User user, String latestMessage, Long noneReadCount) {
+        public static ChatResponse.ChatRoomDto toChatRoomDto(ChatRoom chatRoom, User user, String latestMessage, Long noneReadCount, String lastSentAt) {
             return ChatResponse.ChatRoomDto.builder()
                     .chatRoomId(chatRoom.getChatRoomId())
                     .userId(user.getUserId())
@@ -28,6 +30,7 @@ public class ChatResponse {
                     .userImage(user.getUserImage())
                     .lastMessage(latestMessage)
                     .noneReadCount(noneReadCount)
+                    .lastSentAt(lastSentAt)
                     .build();
         }
     }
@@ -59,6 +62,27 @@ public class ChatResponse {
                     .message(chat.getMessage())
                     .sentAt(chat.getSentAt())
                     .isRead(chat.isRead())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class NotificationDto {
+        private Long notificationId;
+        private Long userId;
+        private String content;
+        private boolean isRead;
+        private String createdAt;
+
+        public static ChatResponse.NotificationDto toNotificationDto(Notification notification) {
+            return NotificationDto.builder()
+                    .notificationId(notification.getNotificationId())
+                    .userId(notification.getUserId())
+                    .content(notification.getContent())
+                    .isRead(notification.isRead())
+                    .createdAt(notification.getCreatedAt())
                     .build();
         }
     }

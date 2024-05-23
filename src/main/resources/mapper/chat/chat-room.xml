@@ -2,17 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.tinyhappytrip.chat.mapper.ChatRoomMapper">
-    <select id="selectChatRoomIdBetweenUsers">
-        SELECT chat_room_id
-        FROM chat_rooms
-        WHERE (participant_id1 = #{participantId1} AND participant_id2 = #{participantId2})
-           OR (participant_id1 = #{participantId2} AND participant_id2 = #{participantId1})
+    <select id="isExistingChatRoom">
+        SELECT EXISTS (SELECT 1
+                       FROM chat_rooms
+                       WHERE (participant_id1 = #{senderId} AND participant_id2 = #{receiverId})
+                          OR (participant_id1 = #{receiverId} AND participant_id2 = #{senderId}))
     </select>
 
-    <insert id="insert">
+    <select id="findChatRoomByParticipants">
+        SELECT chat_room_id
+        FROM chat_rooms
+        WHERE (participant_id1 = #{senderId} AND participant_id2 = #{receiverId})
+           OR (participant_id1 = #{receiverId} AND participant_id2 = #{senderId})
+    </select>
+
+    <insert id="insertChatRoom" parameterType="com.tinyhappytrip.chat.domain.Chat" useGeneratedKeys="true"
+            keyProperty="chatRoomId">
         INSERT INTO chat_rooms (participant_id1, participant_id2)
-        VALUES (#{participantId1}, #{participantId2})
+        VALUES (#{senderId}, #{receiverId})
     </insert>
+
 
     <select id="selectAllChatRoomsByUserId">
         SELECT *
@@ -20,5 +29,4 @@
         WHERE participant_id1 = #{userId}
            OR participant_id2 = #{userId}
     </select>
-
 </mapper>
