@@ -108,8 +108,16 @@ image:
   goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
 
 # 수민
+<<<<<<< HEAD
 #image:
 #  user: /Users/soom/Desktop/tinyhappytrip/user
 #  story: /Users/soom/Desktop/tinyhappytrip/story
 #  collection: /Users/soom/Desktop/tinyhappytrip/collection
 #  goto: /Users/soom/Desktop/tinyhappytrip/goto
+=======
+image:
+  user: /Users/soom/Desktop/tinyhappytrip/user
+  story: /Users/soom/Desktop/tinyhappytrip/story
+  collection: /Users/soom/Desktop/tinyhappytrip/collection
+  goto: /Users/soom/Desktop/tinyhappytrip/goto
+>>>>>>> 0f32317 (feat: proxy 서버 이미지 업로드 추가)
