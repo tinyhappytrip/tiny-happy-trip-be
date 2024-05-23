@@ -6,11 +6,14 @@ import com.tinyhappytrip.chat.dto.ChatResponse;
 import java.util.List;
 
 public interface ChatService {
-    Long findOrCreateChatRoom(Long participantId2);
 
     List<ChatResponse.ChatRoomDto> getAllChatRoom();
 
     List<ChatResponse.ChatDto> getAllChat(Long chatRoomId);
 
-    int saveChat(Long chatRoomId, ChatRequest.ChatDto chat);
+    void saveChatMessage(ChatRequest.ChatDto chatDto);
+
+    void sendChatMessage(ChatRequest.ChatDto chatDto);
+
+    void sendNotification(Long receiverId, String content);
 }

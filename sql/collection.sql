@@ -45,3 +45,5 @@ CREATE TABLE `collection_comments` (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (`collection_id`) REFERENCES `collections` (`collection_id`) ON DELETE CASCADE
 );
+
+SELECT * FROM collections;

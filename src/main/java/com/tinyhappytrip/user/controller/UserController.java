@@ -26,6 +26,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody UserRequest.LoginDto loginDto) {
+        System.out.println("loginDto = " + loginDto);
         JwtToken token = userService.login(loginDto);
         return ResponseEntity.ok(token);
     }

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS `chats`;
 DROP TABLE IF EXISTS `chat_rooms`;
+DROP TABLE IF EXISTS `notifications`;
 
 CREATE TABLE IF NOT EXISTS `chat_rooms` (
 	`chat_room_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -22,5 +23,19 @@ CREATE TABLE IF NOT EXISTS `chats` (
     FOREIGN KEY (`receiver_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE 
 );
 
+CREATE TABLE `notifications` (
+    `notification_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `content` TEXT,
+    `is_read` BOOLEAN DEFAULT FALSE,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+);
+
 SELECT * FROM chats;
 SELECT * FROM chat_rooms;
+SELECT * FROM notifications;
+        SELECT chat_room_id
+        FROM chat_rooms
+        WHERE (participant_id1 = 4 AND participant_id2 = 2)
+           OR (participant_id1 = 2 AND participant_id2 = 4);

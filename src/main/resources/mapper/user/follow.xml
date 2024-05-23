@@ -19,7 +19,7 @@
             FROM follows
             WHERE follower_id = #{userId}
         </if>
-        <if test="type == 'followee'">
+        <if test="type == 'following'">
             SELECT follower_id
             FROM follows
             WHERE followee_id = #{userId}

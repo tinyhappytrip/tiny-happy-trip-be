@@ -1,12 +1,12 @@
 package com.tinyhappytrip.chat.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Chat {
     private Long chatId;
     private Long chatRoomId;

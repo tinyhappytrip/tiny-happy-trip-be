@@ -101,11 +101,11 @@ youtube:
 #  goto: C:/tinyhappytrip/goto
 
 # 성빈
-image:
-  user: /Users/sungbincho/Desktop/tinyhappytrip/user
-  story: /Users/sungbincho/Desktop/tinyhappytrip/story
-  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
-  goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
+#image:
+#  user: /Users/sungbincho/Desktop/tinyhappytrip/user
+#  story: /Users/sungbincho/Desktop/tinyhappytrip/story
+#  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
+#  goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
 
 # 수민
 <<<<<<< HEAD
