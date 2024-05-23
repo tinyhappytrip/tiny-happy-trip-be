@@ -72,6 +72,7 @@ public class ChatResponse {
     public static class NotificationDto {
         private Long notificationId;
         private Long userId;
+        private Long chatRoomId;
         private String content;
         private boolean isRead;
         private String createdAt;
@@ -80,6 +81,7 @@ public class ChatResponse {
             return NotificationDto.builder()
                     .notificationId(notification.getNotificationId())
                     .userId(notification.getUserId())
+                    .chatRoomId(notification.getChatRoomId())
                     .content(notification.getContent())
                     .isRead(notification.isRead())
                     .createdAt(notification.getCreatedAt())

@@ -18,5 +18,6 @@ public interface StoryMapper {
     List<Story> selectStories();
 
     List<Story> selectStoriesBySearchKeyword(String searchKeyword);
+
     Story selectByStoryId(Long storyId);
 }

@@ -11,6 +11,7 @@
         SELECT *
         FROM chats
         WHERE chat_room_id = #{chatRoomId}
+        ORDER BY sent_at DESC
     </select>
 
     <select id="selectLastMessageByChatRoomId">

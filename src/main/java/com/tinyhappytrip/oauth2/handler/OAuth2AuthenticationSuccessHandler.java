@@ -79,7 +79,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             Optional<User> user = userMapper.selectByEmail(oAuth2UserInfo.getEmail());
             if (user.isEmpty()) {
 //                return UriComponentsBuilder.fromUriString("http://192.168.120.75:3000/signup?social=true")
-                return UriComponentsBuilder.fromUriString("http://localhost:3000/signup?social=true")
+//                return UriComponentsBuilder.fromUriString("http://localhost:3000/signup?social=true")
+                return UriComponentsBuilder.fromUriString("http://192.168.0.243:3000/signup?social=true")
                         .queryParam("email", email)
                         .queryParam("userImage", userImage)
                         .queryParam("socialType", socialType)

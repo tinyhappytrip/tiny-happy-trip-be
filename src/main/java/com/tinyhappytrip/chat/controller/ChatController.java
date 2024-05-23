@@ -21,18 +21,24 @@ public class ChatController {
     // 채팅 보내기
     @MessageMapping("/chats/send")
     public void sendMessage(ChatRequest.ChatDto chatDto) {
-        System.out.println("소켓");
+        System.out.println("chatDto = " + chatDto);
         chatService.saveChatMessage(chatDto);
         chatService.sendChatMessage(chatDto);
-        notificationService.createNotification(chatDto.getReceiverId(), chatDto.getContent());
+        notificationService.createNotification(chatDto.getReceiverId(), chatDto.getContent(), chatDto.getChatRoomId());
         chatService.sendNotification(chatDto.getReceiverId(), chatDto.getContent());
     }
-
 
     // 채팅 내용 조회
     @GetMapping("/{chatRoomId}")
     public ResponseEntity<List<ChatResponse.ChatDto>> getAllChat(@PathVariable Long chatRoomId) {
         return ResponseEntity.ok(chatService.getAllChat(chatRoomId));
+    }
+
+    @GetMapping("/rooms/{receiverId}")
+    public Long createAndReturnChatRoomId(@PathVariable Long receiverId) {
+        System.out.println("receiverId = " + receiverId);
+        System.out.println("chatService.createAndReturnChatRoomId(receiverId) = " + chatService.createAndReturnChatRoomId(receiverId));
+        return chatService.createAndReturnChatRoomId(receiverId);
     }
 
     // 채팅 목록 가져오기

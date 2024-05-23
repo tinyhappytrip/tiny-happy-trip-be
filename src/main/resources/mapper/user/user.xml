@@ -73,6 +73,6 @@
     <select id="selectUsersBySearchKeyword">
         SELECT *
         FROM users
-        WHERE nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+        WHERE nickname LIKE CONCAT('%', #{searchKeyword}, '%') AND user_id != #{userId}
     </select>
 </mapper>

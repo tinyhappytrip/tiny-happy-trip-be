@@ -9,7 +9,6 @@ import com.tinyhappytrip.user.dto.UserResponse;
 import com.tinyhappytrip.user.mapper.FollowMapper;
 import com.tinyhappytrip.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,7 +76,7 @@ public class UserServiceImpl implements UserService {
         if (passwordEncoder.matches(newPassword, userMapper.selectByUserId(userId).get().getPassword())) {
             return 1;
         } else {
-           return 0;
+            return 0;
         }
     }
 
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService {
         if (editDto.getPassword() != null) {
             editDto.setPassword(passwordEncoder.encode(editDto.getPassword()));
         }
-         return userMapper.update(editDto.toEntity());
+        return userMapper.update(editDto.toEntity());
     }
 
     @Override
@@ -139,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void uploadUserImage(String basePath, MultipartFile userImageFile) throws IOException {
         Long userId = SecurityUtil.getCurrentUserId();
-        deletePreviousImage(basePath, userId);
+//        deletePreviousImage(basePath, userId);
         String storedFileName = UUID.randomUUID().toString() + "_" + userImageFile.getOriginalFilename();
         String userImage = Paths.get(basePath, storedFileName).toString();
         File storedFile = new File(userImage);
@@ -147,17 +145,17 @@ public class UserServiceImpl implements UserService {
         userImageFile.transferTo(storedFile);
     }
 
-    private void deletePreviousImage(String basePath, Long userId) {
-        User user = userMapper.selectByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        String userImage = user.getUserImage();
-        if (!userImage.equals(basePath + "/default.jpg")) {
-            File previousImageFile = new File(userImage);
-            if (previousImageFile.exists()) {
-                previousImageFile.delete();
-            }
-        }
-    }
+//    private void deletePreviousImage(String basePath, Long userId) {
+//        User user = userMapper.selectByUserId(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//        String userImage = user.getUserImage();
+//        if (!userImage.equals(basePath + "/default.jpg")) {
+//            File previousImageFile = new File(userImage);
+//            if (previousImageFile.exists()) {
+//                previousImageFile.delete();
+//            }
+//        }
+//    }
 
     private static String generateRandomPassword(int length, PasswordEncoder passwordEncoder) {
         StringBuilder password = new StringBuilder();
@@ -172,14 +170,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse.UserDto> getUsersBySearchKeyword(String keyword) {
         Long currentUserId = SecurityUtil.getCurrentUserId();
-        List<UserResponse.UserDto> searchUsersList = new ArrayList<>();
-        searchUsersList.add(userMapper.selectUsersBySearchKeyword(keyword)
+        List<UserResponse.UserDto> searchUsersList = userMapper.selectUsersBySearchKeyword(keyword, currentUserId   ).stream()
                 .map(user -> UserResponse.UserDto.toUserDto(
                         user,
                         followMapper.selectFollowCountByUserId("follower", user.getUserId()),
                         followMapper.selectFollowCountByUserId("followee", user.getUserId()),
-                        Boolean.TRUE.equals(followMapper.selectFollow(currentUserId, user.getUserId()))))
-                .orElse(null));
+                        followMapper.selectFollow(currentUserId, user.getUserId()) == 1 ? true : false))
+                .collect(Collectors.toList());
         return searchUsersList;
     }
 }

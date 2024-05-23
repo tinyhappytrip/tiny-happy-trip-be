@@ -44,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
                     User otherParticipant = userMapper.selectByUserId(otherParticipantId).get();
                     Chat chat = chatMapper.selectLastMessageByChatRoomId(chatRoom.getChatRoomId());
                     Long noneReadCount = chatMapper.selectCountNoneReadCountByChatRoomId(userId, chatRoom.getChatRoomId());
-                    return ChatResponse.ChatRoomDto.toChatRoomDto(chatRoom, otherParticipant, chat.getMessage(), noneReadCount, chat.getSentAt());
+                    return ChatResponse.ChatRoomDto.toChatRoomDto(chatRoom, otherParticipant, chat == null ? null : chat.getMessage(), noneReadCount, chat == null ? null : chat.getSentAt());
                 })
                 .collect(Collectors.toList());
     }
@@ -64,5 +64,18 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void sendNotification(Long receiverId, String content) {
         messagingTemplate.convertAndSend("/sub/notifications/" + receiverId, content);
+    }
+
+    @Override
+    public Long createAndReturnChatRoomId(Long receiverId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        Chat chat = Chat.builder()
+                .senderId(userId)
+                .receiverId(receiverId)
+                .build();
+        if (!chatRoomMapper.isExistingChatRoom(chat)) {
+            chatRoomMapper.insertChatRoom(chat);
+        }
+        return chatRoomMapper.findChatRoomByParticipants(chat);
     }
 }

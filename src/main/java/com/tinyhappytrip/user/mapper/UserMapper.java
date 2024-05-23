@@ -3,6 +3,7 @@ package com.tinyhappytrip.user.mapper;
 import com.tinyhappytrip.user.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -26,6 +27,6 @@ public interface UserMapper {
 
     void deleteOAuthUser(String email);
 
-    Optional<User> selectUsersBySearchKeyword(String searchKeyword);
+    List<User> selectUsersBySearchKeyword(String searchKeyword, Long userId);
 
 }

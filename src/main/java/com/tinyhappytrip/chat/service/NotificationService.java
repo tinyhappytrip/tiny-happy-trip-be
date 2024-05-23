@@ -5,7 +5,7 @@ import com.tinyhappytrip.chat.dto.ChatResponse;
 import java.util.List;
 
 public interface NotificationService {
-    void createNotification(Long receiverId, String str);
+    void createNotification(Long receiverId, String str, Long chatRoomId);
 
     List<ChatResponse.NotificationDto> getNotifications();
 

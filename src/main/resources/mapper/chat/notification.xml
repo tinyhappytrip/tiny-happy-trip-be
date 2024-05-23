@@ -3,8 +3,8 @@
 
 <mapper namespace="com.tinyhappytrip.chat.mapper.NotificationMapper">
     <insert id="insertNotification">
-        INSERT INTO notifications (user_id, content)
-        VALUES (#{userId}, #{content})
+        INSERT INTO notifications (user_id, content, chat_room_id)
+        VALUES (#{userId}, #{content}, #{chatRoomId})
     </insert>
 
     <select id="selectNotifications">

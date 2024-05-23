@@ -4,7 +4,7 @@ spring:
 
   server:
     port: 8080
-#    address: 192.168.120.75
+    address: 192.168.0.243
 
   resource:
     static-locations: file:///C:/tinyhappytrip/user/
@@ -31,8 +31,8 @@ spring:
               - email
               - profile_image
           kakao:
-            client-id: e86f69e6ec0994a1f096b9953c71f6d7
-            client-secret: hU1dFQ2Dg9oD46GDtfeGhqhY9BGhRB8m
+            client-id: 78544c4fa524eb860eea35deffb9d03a
+            client-secret: Zde12QT8jAuWswymPwkaNfKv19AI5jbZ
             client-name: Kakao
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
@@ -87,7 +87,7 @@ mybatis:
 
 jwt:
   secret: 32fb489c2d3908512124353a733d2f58bcbc531fffb3cee4d8fe674ef97628e2
-  token-validity-in-seconds: 3600
+  token-validity-in-seconds: 10800
 
 youtube:
   api:
@@ -101,23 +101,15 @@ youtube:
 #  goto: C:/tinyhappytrip/goto
 
 # 성빈
-#image:
-#  user: /Users/sungbincho/Desktop/tinyhappytrip/user
-#  story: /Users/sungbincho/Desktop/tinyhappytrip/story
-#  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
-#  goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
+image:
+  user: /Users/sungbincho/Desktop/tinyhappytrip/user
+  story: /Users/sungbincho/Desktop/tinyhappytrip/story
+  collection: /Users/sungbincho/Desktop/tinyhappytrip/collection
+  goto: /Users/sungbincho/Desktop/tinyhappytrip/goto
 
 # 수민
-<<<<<<< HEAD
 #image:
 #  user: /Users/soom/Desktop/tinyhappytrip/user
 #  story: /Users/soom/Desktop/tinyhappytrip/story
 #  collection: /Users/soom/Desktop/tinyhappytrip/collection
 #  goto: /Users/soom/Desktop/tinyhappytrip/goto
-=======
-image:
-  user: /Users/soom/Desktop/tinyhappytrip/user
-  story: /Users/soom/Desktop/tinyhappytrip/story
-  collection: /Users/soom/Desktop/tinyhappytrip/collection
-  goto: /Users/soom/Desktop/tinyhappytrip/goto
->>>>>>> 0f32317 (feat: proxy 서버 이미지 업로드 추가)

@@ -10,6 +10,7 @@ import lombok.*;
 public class Notification {
     private Long notificationId;
     private Long userId;
+    private Long chatRoomId;
     private String content;
     private boolean isRead;
     private String createdAt;

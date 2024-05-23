@@ -16,8 +16,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
-    public void createNotification(Long userId, String content) {
-        notificationMapper.insertNotification(userId, content);
+    public void createNotification(Long userId, String content, Long chatRoomId) {
+        notificationMapper.insertNotification(userId, content, chatRoomId);
     }
 
     @Override

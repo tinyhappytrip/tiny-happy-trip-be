@@ -16,4 +16,6 @@ public interface ChatService {
     void sendChatMessage(ChatRequest.ChatDto chatDto);
 
     void sendNotification(Long receiverId, String content);
+
+    Long createAndReturnChatRoomId(Long user1);
 }

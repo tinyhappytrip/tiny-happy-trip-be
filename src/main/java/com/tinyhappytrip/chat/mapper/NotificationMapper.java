@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface NotificationMapper {
-    void insertNotification(Long userId, String content);
+    void insertNotification(Long userId, String content, Long chatRoomId);
 
     List<Notification> selectNotifications(Long userId);
 

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/goto-list")
+    @RequestMapping("/goto-list")
 @RequiredArgsConstructor
 public class GotoController {
     private final GotoService gotoService;
