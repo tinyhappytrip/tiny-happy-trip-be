@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinyhappytrip.gotolist.mapper.GotoMapper">
+    <insert id="insertList">
+        INSERT INTO goto_lists (title, user_id)
+        VALUES (#{title}, #{userId})
+    </insert>
+
+    <insert id="insertItem">
+        INSERT INTO goto_items (goto_list_id, place_name, description, place_id, place_image, latitude, longitude)
+        VALUES (#{gotoListId}, #{placeName}, #{description}, #{placeId}, #{placeImage}, #{latitude}, #{longitude})
+    </insert>
+
+    <select id="selectGotoList">
+        SELECT *
+        FROM goto_lists
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectCountGotoList">
+        SELECT COUNT(*)
+        FROM goto_items
+        WHERE goto_list_id = #{gotoListId}
+    </select>
+
+    <select id="selectGotoItemsByGotoListId">
+        SELECT *
+        FROM goto_items
+        WHERE goto_list_id = #{gotoListId}
+    </select>
+
+    <select id="selectGotoTitleByGotoListId">
+        SELECT title
+        FROM goto_lists
+        WHERE goto_list_id = #{gotoListId}
+    </select>
+
+    <delete id="deleteGotoItem">
+        DELETE
+        FROM goto_items
+        WHERE goto_item_id = #{gotoItemId}
+          AND goto_list_id = #{gotoListId}
+    </delete>
+
+    <delete id="deleteGotoList">
+        DELETE
+        FROM goto_lists
+        WHERE goto_list_id = #{gotoListId}
+    </delete>
+</mapper>
